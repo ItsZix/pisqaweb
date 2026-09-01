@@ -383,11 +383,22 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   function refreshOrdersFromStorage(){ loadOrders().then(renderOrders); }
   document.getElementById("manual-refresh").onclick = function(e){ e.preventDefault(); refreshOrdersFromStorage(); };
 
+  // Polling de respaldo cada 8 segundos
   setInterval(function(){
     if(adminView.style.display === "block" && !tabCaja.classList.contains("hidden")){
       refreshOrdersFromStorage();
     }
-  }, 6000);
+  }, 8000);
+
+  // Supabase Realtime (Instantáneo)
+  supabase
+    .channel('schema-db-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, function(payload) {
+      if(adminView.style.display === "block"){
+        refreshOrdersFromStorage();
+      }
+    })
+    .subscribe();
 
   updateMesaUI();
 })();
