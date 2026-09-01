@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PISQA</title>
+<title>PISQA | Snack & Cafetería</title>
 <link rel="icon" href="img/icono.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<!-- icon library (referenced via <use>) -->
+<!-- icon library -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
 <defs>
   <g id="ic-leaf">
@@ -46,11 +46,7 @@
   <g id="ic-arrow">
     <path d="M5 12h14M13 6l6 6-6 6"/>
   </g>
-  <g id="ic-map">
-    <path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5 9 4Z"/>
-    <path d="M9 4v13M15 6.5V19.5"/>
-  </g>
-  <!-- categorías del menú -->
+  <!-- Menú icons -->
   <g id="ic-sandwich">
     <path d="M3 10h18l-2 4H5l-2-4Z"/>
     <path d="M4 14h16l-1.5 3a1 1 0 0 1-.9.6H6.4a1 1 0 0 1-.9-.6L4 14Z"/>
@@ -92,58 +88,29 @@
     <div class="wrap nav-inner">
       <img class="logo-mark" src="img/logo.png" alt="PISQA">
       <nav class="nav-links">
-        <a href="#menu">Menú</a>
-        <a href="#ubicacion">Ubicación</a>
+        <a href="#menu">La Carta</a>
+        <a href="#ubicacion">Encuéntranos</a>
         <a href="https://www.instagram.com/pisqasnack/" target="_blank" rel="noopener">Instagram</a>
-        <a href="#" class="staff-link" id="open-login-nav">Staff</a>
-        <a href="#ubicacion" class="nav-cta"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-pin"/></svg>Cómo llegar</a>
+        <a href="#" class="staff-link" id="open-login-nav">Acceso Personal</a>
+        <a href="#ubicacion" class="nav-cta">Cómo llegar</a>
       </nav>
     </div>
   </header>
 
   <section class="hero">
-    <svg class="hero-texture" viewBox="0 0 320 320"><use href="#ic-leaf" fill="none" stroke="#45605A" stroke-width="0.6"/></svg>
     <div class="wrap">
       <div>
         <div class="kicker"><span class="rule"></span>Snack · Cafetería en Castilla</div>
         <h1>Un alto en el día,<br>con sabor a casa.</h1>
         <p class="hero-sub">Sándwiches recién armados, jugos de fruta natural y café de grano molido, en un espacio pensado para compartir y quedarte un rato.</p>
         <div class="hero-cta">
-          <a href="#menu" class="btn btn-solid">Ver el menú<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow"/></svg></a>
-          <a href="https://www.google.com/maps?q=-5.2073811,-80.6222417&z=17&hl=es" target="_blank" rel="noopener" class="btn btn-line">Cómo llegar</a>
-        </div>
-        <div class="hero-meta">
-          <div class="hero-meta-item"><span class="ic-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-pin"/></svg></span>Castilla, Piura</div>
-          <div class="hero-meta-item"><span class="ic-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-instagram"/></svg></span>@pisqasnack</div>
+          <a href="#menu" class="btn btn-solid">Ver la carta</a>
+          <a href="https://www.google.com/maps?q=-5.2073811,-80.6222417&z=17&hl=es" target="_blank" rel="noopener" class="btn btn-line">Visítanos</a>
         </div>
       </div>
 
       <div class="hero-visual">
-        <div class="hero-blob"></div>
-        <svg class="hero-illustration" viewBox="0 0 400 400" fill="none">
-          <!-- taza de cafe -->
-          <g transform="translate(60,150)">
-            <path d="M10 40h150v55a35 35 0 0 1-35 35H45a35 35 0 0 1-35-35V40Z" fill="#F4F1E6" stroke="#2F423D" stroke-width="4"/>
-            <path d="M160 55h18a22 22 0 0 1 0 44h-18" fill="none" stroke="#2F423D" stroke-width="4" stroke-linecap="round"/>
-            <path d="M40 40c0-14 8-22 8-30M70 40c0-14 8-22 8-30M100 40c0-14 8-22 8-30" stroke="#AD8A3E" stroke-width="4" stroke-linecap="round"/>
-            <ellipse cx="85" cy="40" rx="75" ry="10" fill="#45605A"/>
-          </g>
-          <!-- vaso de jugo -->
-          <g transform="translate(255,90)">
-            <path d="M6 6h78l-9 132a10 10 0 0 1-10 9H25a10 10 0 0 1-10-9L6 6Z" fill="#F4F1E6" stroke="#2F423D" stroke-width="4"/>
-            <path d="M6 6h78" stroke="#2F423D" stroke-width="4"/>
-            <path d="M12 55h66" stroke="#CFEEDD" stroke-width="10"/>
-            <path d="M10 30h70" stroke="#AD8A3E" stroke-width="6" stroke-linecap="round"/>
-            <circle cx="45" cy="-6" r="16" fill="#AD8A3E"/>
-          </g>
-          <!-- hojas decorativas -->
-          <g transform="translate(48,60)" stroke="#45605A" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M0 40C0 18 16 4 40 2 38 24 22 38 0 40Z"/>
-          </g>
-          <g transform="translate(330,230) rotate(20)" stroke="#45605A" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M0 26C0 12 10 3 26 1 25 15 14 24 0 26Z"/>
-          </g>
-        </svg>
+        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1200&q=80" alt="Interior de la cafetería y café fresco">
       </div>
     </div>
   </section>
@@ -151,24 +118,24 @@
   <section class="features">
     <div class="wrap feature-grid">
       <div class="feature-card">
-        <div class="fc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-leaf"/></svg></div>
+        <div class="fc-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-leaf"/></svg></div>
         <h3>Ingredientes frescos</h3>
-        <p>Fruta de temporada y productos seleccionados cada día para la carta.</p>
+        <p>Fruta de temporada y productos seleccionados cada día para ti.</p>
       </div>
       <div class="feature-card">
-        <div class="fc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flame"/></svg></div>
+        <div class="fc-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flame"/></svg></div>
         <h3>Preparado al momento</h3>
-        <p>Sándwiches, jugos y café que se hacen cuando llega tu pedido, no antes.</p>
+        <p>Sándwiches y café que se hacen exactamente cuando llega tu pedido.</p>
       </div>
       <div class="feature-card">
-        <div class="fc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-sofa"/></svg></div>
+        <div class="fc-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-sofa"/></svg></div>
         <h3>Un lugar para quedarte</h3>
-        <p>Espacio cómodo para trabajar, conversar o simplemente hacer una pausa.</p>
+        <p>Espacio súper cómodo para trabajar, conversar o hacer una pausa.</p>
       </div>
       <div class="feature-card">
-        <div class="fc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bolt"/></svg></div>
-        <h3>Pedidos ágiles</h3>
-        <p>Atención rápida en barra para quienes van de paso.</p>
+        <div class="fc-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bolt"/></svg></div>
+        <h3>Atención ágil</h3>
+        <p>Atención rápida en barra para quienes van de paso en su día.</p>
       </div>
     </div>
   </section>
@@ -176,45 +143,47 @@
   <section class="menu-section" id="menu">
     <div class="wrap">
       <div class="section-head">
-        <div>
-          <div class="kicker"><span class="rule"></span>Carta</div>
-          <h2>Qué servimos</h2>
-        </div>
-        <p>Snacks, postres, café y bebidas frías — todo hecho para acompañar tu visita.</p>
+        <div class="kicker"><span class="rule"></span>Carta</div>
+        <h2>Nuestras especialidades</h2>
+        <p>Descubre nuestra variedad de snacks, postres, café y bebidas frías, todo preparado con pasión.</p>
       </div>
       <div class="tabs" id="menu-tabs"></div>
       <div class="menu-grid" id="menu-grid"></div>
     </div>
   </section>
 
+  <section class="insta-section">
+    <div class="wrap">
+      <div class="insta-header">
+        <h2>Sigue nuestra historia</h2>
+        <a href="https://www.instagram.com/pisqasnack/" target="_blank" rel="noopener">@pisqasnack</a>
+      </div>
+      <div class="insta-grid">
+        <a href="https://www.instagram.com/pisqasnack/" class="insta-post"><img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=600&q=80" alt="Instagram Post 1"></a>
+        <a href="https://www.instagram.com/pisqasnack/" class="insta-post"><img src="https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?auto=format&fit=crop&w=600&q=80" alt="Instagram Post 2"></a>
+        <a href="https://www.instagram.com/pisqasnack/" class="insta-post"><img src="https://images.unsplash.com/photo-1481833759212-e5fb6fc31b8d?auto=format&fit=crop&w=600&q=80" alt="Instagram Post 3"></a>
+        <a href="https://www.instagram.com/pisqasnack/" class="insta-post"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80" alt="Instagram Post 4"></a>
+      </div>
+    </div>
+  </section>
+
   <section class="location-section" id="ubicacion">
     <div class="wrap">
-      <div class="section-head">
-        <div>
-          <div class="kicker"><span class="rule"></span>Visítanos</div>
-          <h2>Ubicación</h2>
-        </div>
-      </div>
       <div class="loc-grid">
+        <div class="loc-card">
+          <div class="kicker"><span class="rule"></span>Visítanos</div>
+          <h3>Te esperamos en Castilla</h3>
+          <div class="loc-row">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-pin"/></svg></span>
+            <div class="txt"><div class="lbl">Dirección</div><div class="val"><a href="https://www.google.com/maps?q=-5.2073811,-80.6222417&z=17&hl=es" target="_blank" rel="noopener">Abrir ubicación en Google Maps</a></div></div>
+          </div>
+          <div class="loc-row">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clock"/></svg></span>
+            <div class="txt"><div class="lbl">Horario</div><div class="val">Lunes a Sábado<br>Pronto confirmaremos horario oficial</div></div>
+          </div>
+        </div>
         <div class="map-frame">
           <iframe src="https://www.google.com/maps?q=-5.2073811,-80.6222417&z=17&hl=es&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Ubicación de PISQA en el mapa"></iframe>
-        </div>
-        <div class="loc-side">
-          <div class="loc-card">
-            <div class="loc-row">
-              <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-pin"/></svg></span>
-              <div class="txt"><div class="lbl">Dirección</div><div class="val"><a href="https://www.google.com/maps?q=-5.2073811,-80.6222417&z=17&hl=es" target="_blank" rel="noopener">Ver ubicación exacta en Google Maps →</a></div></div>
-            </div>
-            <div class="loc-row">
-              <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clock"/></svg></span>
-              <div class="txt"><div class="lbl">Horario</div><div class="val">Por confirmar</div></div>
-            </div>
-          </div>
-          <a class="insta-card" href="https://www.instagram.com/pisqasnack/" target="_blank" rel="noopener">
-            <span class="ic-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-instagram"/></svg></span>
-            <div><div class="it-title">@pisqasnack</div><div class="it-sub">Síguenos en Instagram</div></div>
-            <span class="it-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow"/></svg></span>
-          </a>
         </div>
       </div>
     </div>
@@ -224,29 +193,27 @@
     <div class="wrap">
       <div class="foot-top">
         <div>
-          <img class="logo-mark" src="img/logo.png" alt="PISQA">
-          <p>Snack-cafetería en Castilla, Piura. Sándwiches, jugos y café de grano en un espacio para quedarte.</p>
+          <img class="logo-mark" src="img/logo fondo negro.png" alt="PISQA">
+          <p>Snack-cafetería en Castilla, Piura. Sándwiches, jugos y café de grano en un espacio ideal para quedarte y disfrutar.</p>
         </div>
-        <div class="foot-links">
-          <div class="foot-col">
-            <h4>Explorar</h4>
-            <a href="#menu">Menú</a>
-            <a href="#ubicacion">Ubicación</a>
-          </div>
-          <div class="foot-col">
-            <h4>Contacto</h4>
-            <a href="https://www.instagram.com/pisqasnack/" target="_blank" rel="noopener">Instagram</a>
-            <a href="https://www.google.com/maps?q=-5.2073811,-80.6222417&z=17&hl=es" target="_blank" rel="noopener">Google Maps</a>
-          </div>
+        <div class="foot-col">
+          <h4>Explorar</h4>
+          <a href="#menu">La Carta</a>
+          <a href="#ubicacion">Ubicación y Horarios</a>
+        </div>
+        <div class="foot-col">
+          <h4>Comunidad</h4>
+          <a href="https://www.instagram.com/pisqasnack/" target="_blank" rel="noopener">Síguenos en Instagram</a>
+          <a href="https://www.google.com/maps?q=-5.2073811,-80.6222417&z=17&hl=es" target="_blank" rel="noopener">Déjanos una reseña</a>
         </div>
       </div>
       <div class="foot-bottom">
         <span>© <span id="year-now"></span> PISQA. Todos los derechos reservados.</span>
-        <div style="display:flex; align-items:center; gap:18px;">
+        <div style="display:flex; align-items:center; gap:20px;">
           <div class="foot-social">
-            <a href="https://www.instagram.com/pisqasnack/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-instagram"/></svg></a>
+            <a href="https://www.instagram.com/pisqasnack/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-instagram"/></svg></a>
           </div>
-          <a href="#" class="staff-entry" id="open-login-footer">Acceso personal</a>
+          <a href="#" class="staff-entry" id="open-login-footer">Acceso del personal</a>
         </div>
       </div>
     </div>
@@ -257,20 +224,20 @@
 <!-- ================= ADMIN LOGIN ================= -->
 <div id="login-view" class="hidden">
   <div class="login-card">
-    <img class="logo-mark" src="img/logo.png" alt="PISQA">
-    <h2>Acceso del personal</h2>
+    <img class="logo-mark" src="img/logo fondo negro.png" alt="PISQA">
+    <h2>Sistema de Caja</h2>
     <p>Ingresa la contraseña para tomar pedidos y gestionar cobros.</p>
     <input type="password" id="password-input" placeholder="Contraseña" autocomplete="off">
-    <button class="btn btn-solid" id="login-submit">Entrar</button>
+    <button class="btn btn-solid" id="login-submit">Acceder</button>
     <div class="login-error" id="login-error"></div>
-    <a href="#" class="back-link" id="back-to-site">← Volver al sitio</a>
+    <a href="#" class="back-link" id="back-to-site">← Volver a la página web</a>
   </div>
 </div>
 
 <!-- ================= ADMIN VIEW ================= -->
 <div id="admin-view">
   <div class="admin-nav">
-    <img class="logo-mark" src="img/logo.png" alt="PISQA">
+    <img class="logo-mark" src="img/logo fondo negro.png" alt="PISQA">
     <div class="admin-tabs">
       <button class="admin-tab-btn active" data-admin-tab="pedido">Tomar Pedido</button>
       <button class="admin-tab-btn" data-admin-tab="caja">Caja / Historial</button>
@@ -284,7 +251,7 @@
         <div class="order-layout">
           <div>
             <div class="mesa-picker">
-              <label>Mesa</label>
+              <label>Número de Mesa</label>
               <div class="mesa-stepper">
                 <button id="mesa-minus">–</button>
                 <div class="mesa-num" id="mesa-num">1</div>
@@ -300,8 +267,8 @@
             <div class="cart-mesa" id="cart-mesa-label">Mesa 1</div>
             <div id="cart-lines"><div class="cart-empty">Aún no agregas productos.</div></div>
             <div class="cart-total"><span>Total</span><span id="cart-total-val">S/ 0.00</span></div>
-            <button class="send-order-btn" id="send-order-btn" disabled>Enviar pedido</button>
-            <button class="clear-cart-btn" id="clear-cart-btn">Vaciar</button>
+            <button class="send-order-btn" id="send-order-btn" disabled>Enviar pedido a caja</button>
+            <button class="clear-cart-btn" id="clear-cart-btn">Vaciar pedido</button>
             <div class="order-confirm" id="order-confirm"></div>
           </div>
         </div>
@@ -313,7 +280,7 @@
           <div class="summary-card"><div class="sc-label">Cobrado hoy</div><div class="sc-value" id="sum-cobrado">S/ 0.00</div></div>
           <div class="summary-card"><div class="sc-label">Pedidos pagados hoy</div><div class="sc-value" id="sum-pagados">0</div></div>
         </div>
-        <div class="refresh-note">Se actualiza solo cada pocos segundos · <a href="#" id="manual-refresh" style="text-decoration:underline;">actualizar ahora</a></div>
+        <div class="refresh-note">Los pedidos de Supabase Realtime aparecen automáticamente · <a href="#" id="manual-refresh" style="text-decoration:underline;">Forzar actualización</a></div>
 
         <div class="caja-col-head">Pendientes de pago</div>
         <div class="order-list" id="pending-list"></div>
