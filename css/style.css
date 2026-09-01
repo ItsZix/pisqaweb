@@ -42,7 +42,7 @@ svg{display:block;}
     display:flex; align-items:center; justify-content:space-between;
     padding:24px 0;
 }
-.nav-inner .logo-mark{height:45px; width:auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));}
+.nav-inner .logo-mark{height:75px; width:auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));}
 .nav-links{display:flex; align-items:center; gap:36px; font-size:15px; font-weight:500;}
 .nav-links a{text-decoration:none; transition:color .2s ease;}
 .nav-links a:hover{color:var(--brand);}
