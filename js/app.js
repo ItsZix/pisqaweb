@@ -6,16 +6,16 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 (function(){
   "use strict";
 
-  var STAFF_PASSWORD = "pisqa2026"; // cámbiala aquí si lo necesitas
+  var STAFF_PASSWORD = "pisqa2026";
   var STORAGE_KEY = "pisqa_pedidos";
 
   var CAT_ICONS = {
-    "Snacks":"ic-sandwich", "Postres":"ic-dessert", "Jugos":"ic-juice",
-    "Café":"ic-coffee", "Dulces y snacks":"ic-cookie", "Bebidas":"ic-bottle"
+    "SNACKS":"ic-sandwich", "Postres":"ic-dessert", "Jugos":"ic-juice",
+    "Cofee Drinks":"ic-coffee", "DULCE - SNACK":"ic-cookie", "BEBIDAS":"ic-bottle"
   };
 
   var MENU = [
-    {cat:"Snacks", items:[
+    {cat:"SNACKS", items:[
       {id:"001", nombre:"Sandwich de Chicharron", desc:"Crispy pork belly sandwich.", precio:14.00},
       {id:"002", nombre:"Sándwich de Lomo", desc:"Loin steak sandwich.", precio:13.00},
       {id:"003", nombre:"Sándwich de Pavo", desc:"Turkey sandwich.", precio:15.00},
@@ -38,13 +38,13 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       {id:"016", nombre:"Amanecer", desc:"Mixtura de jugo de naranja. Orange juice mixture", precio:9.00},
       {id:"017", nombre:"Chicha morada (Vaso)", desc:"Bebida de maiz morado con canela y limón. Purple corn drink with cinnamon and lime.", precio:4.00}
     ]},
-    {cat:"Café", items:[
+    {cat:"Cofee Drinks", items:[
       {id:"018", nombre:"Americano", desc:"Un shot de espresso con una taza de agua. A shot of espresso with a cup of water.", precio:6.00},
       {id:"019", nombre:"Capucchino", desc:"Dos shot de espresso con poca leche y espuma. Two shots of espresso with a little milk and foam.", precio:9.00},
       {id:"020", nombre:"Late", desc:"Un shot de espresso con mucha leche vaporizada y poca espuma. A shot of espresso with lots of steamed milk and little foam.", precio:9.00},
       {id:"021", nombre:"Mocacchino", desc:"Espresso con leche vaporizada y un toque de jarabe de chocolate. Espresso with steamed milk and a touch of chocolate syrup..", precio:10.00}
     ]},
-    {cat:"Dulces y snacks", items:[
+    {cat:"DULCE - SNACK", items:[
       {id:"022", nombre:"Chifles", desc:"", precio:6.00},
       {id:"023", nombre:"Gllt. Munición. San Jorge", desc:"", precio:1.80},
       {id:"024", nombre:"Inkachips", desc:"", precio:3.50},
@@ -61,7 +61,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       {id:"035", nombre:"Choco. Sublime", desc:"", precio:3.50},
       {id:"036", nombre:"Choc. Sublim Crispy", desc:"", precio:1.70}
     ]},
-    {cat:"Bebidas", items:[
+    {cat:"BEBIDAS", items:[
       {id:"037", nombre:"Agua San Luis", desc:"", precio:3.00},
       {id:"038", nombre:"Gatorade Mandarina", desc:"", precio:3.50},
       {id:"039", nombre:"Agua San Carlos", desc:"", precio:1.50},
@@ -79,7 +79,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   function fmt(n){ return "S/ " + n.toFixed(2); }
   function iconSvg(id, extra){
-    return '<svg '+(extra||'')+' viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#'+id+'"/></svg>';
+    return '<svg '+(extra||'')+' viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:24px; height:24px; stroke:var(--brand);"><use href="#'+id+'"/></svg>';
   }
 
   // ---------- PUBLIC MENU ----------
@@ -92,7 +92,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     MENU.forEach(function(g){
       var b = document.createElement("button");
       b.className = "tab-btn" + (g.cat === activeCat ? " active" : "");
-      b.innerHTML = iconSvg(CAT_ICONS[g.cat]) + g.cat;
+      b.innerHTML = '<svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#'+CAT_ICONS[g.cat]+'"/></svg>' + g.cat;
       b.onclick = function(){ activeCat = g.cat; renderPublicMenu(); };
       tabsEl.appendChild(b);
     });
@@ -101,10 +101,11 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     group.items.forEach(function(it){
       var div = document.createElement("div");
       div.className = "menu-item";
+      // AQUI quitamos el precio en la vista publica y ponemos un icono que represente la categoria
       div.innerHTML =
         '<div class="mi-left"><div class="mi-name">'+it.nombre+'</div>' +
         (it.desc ? '<div class="mi-desc">'+it.desc+'</div>' : '') + '</div>' +
-        '<div class="mi-price">'+fmt(it.precio)+'</div>';
+        '<div class="mi-price" style="display:flex; align-items:center; justify-content:center;">' + iconSvg(CAT_ICONS[group.cat]) + '</div>';
       gridEl.appendChild(div);
     });
   }
@@ -194,6 +195,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     group.items.forEach(function(it){
       var div = document.createElement("div");
       div.className = "item-card";
+      // En admin si mostramos precio porque el cajero necesita cobrar
       div.innerHTML =
         '<div><div class="ic-name">'+it.nombre+'</div><div class="ic-price">'+fmt(it.precio)+'</div></div>' +
         '<button class="item-add" aria-label="Agregar">+</button>';
