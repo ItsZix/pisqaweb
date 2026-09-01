@@ -16,62 +16,62 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   var MENU = [
     {cat:"Snacks", items:[
-      {id:"001", nombre:"Sandwich de chicharrón", desc:"Pan crocante con chicharrón de cerdo.", precio:14.00},
-      {id:"002", nombre:"Sándwich de lomo", desc:"Lomo de res a la plancha.", precio:13.00},
-      {id:"003", nombre:"Sándwich de pavo", desc:"Pechuga de pavo.", precio:15.00},
-      {id:"004", nombre:"Croissant mixto", desc:"Pollo, durazno y mayonesa.", precio:12.50},
-      {id:"005", nombre:"Croissant clásico", desc:"Jamón y queso.", precio:9.00},
+      {id:"001", nombre:"Sandwich de Chicharron", desc:"Crispy pork belly sandwich.", precio:14.00},
+      {id:"002", nombre:"Sándwich de Lomo", desc:"Loin steak sandwich.", precio:13.00},
+      {id:"003", nombre:"Sándwich de Pavo", desc:"Turkey sandwich.", precio:15.00},
+      {id:"004", nombre:"Croissant Mixto", desc:"Chicken, peach, and mayonnaise croissant. Crosaint de pollo, durazno y mayonesa.", precio:12.50},
+      {id:"005", nombre:"Croissant Clásico", desc:"Classic ham and cheese croissant. Croissant clasico de jamon y queso.", precio:9.00},
       {id:"006", nombre:"Empanadas", desc:"", precio:6.00}
     ]},
     {cat:"Postres", items:[
-      {id:"007", nombre:"Cuchareable", desc:"Postre del día.", precio:10.00},
-      {id:"008", nombre:"Crema volteada", desc:"", precio:6.00},
-      {id:"009", nombre:"Torta de vainilla", desc:"", precio:5.00},
-      {id:"010", nombre:"Torta de chocolate", desc:"", precio:6.00}
+      {id:"007", nombre:"Cuchareable", desc:"Postre del día. Dessert of the day.", precio:10.00},
+      {id:"008", nombre:"Crema volteada", desc:"Caramel custard.", precio:6.00},
+      {id:"009", nombre:"Torta de vainilla", desc:"Vanilla cake.", precio:5.00},
+      {id:"010", nombre:"Torta de Chocolate", desc:"Chocolat cake.", precio:6.00}
     ]},
     {cat:"Jugos", items:[
-      {id:"011", nombre:"Especial Pisqa", desc:"Papaya, leche y algarrobina.", precio:12.00},
-      {id:"012", nombre:"Fusión Pisqa", desc:"Papaya y piña.", precio:9.00},
-      {id:"013", nombre:"Piñasqa", desc:"Piña fresca.", precio:9.00},
-      {id:"014", nombre:"Pisqa pink vibes", desc:"Fresa con leche.", precio:10.00},
-      {id:"015", nombre:"Frutos rojos", desc:"Arándanos, fresa y leche.", precio:14.00},
-      {id:"016", nombre:"Amanecer", desc:"Jugo de naranja.", precio:9.00},
-      {id:"017", nombre:"Chicha morada (vaso)", desc:"Con canela y limón.", precio:4.00}
+      {id:"011", nombre:"Especial Pisqa", desc:"(Jugo especial - Special Juice) Mixtura de papaya con leche y algarrobina. A blend of papaya with milk, carob syrup, and", precio:12.00},
+      {id:"012", nombre:"Fusión Pisqa", desc:"(Jugo surtido - Mixed juice) Mixtura de papaya y piña. Papaya, pineapple and aplle mixture.", precio:9.00},
+      {id:"013", nombre:"Piñasqa", desc:"(Jugo de Piña - Pineapple juice) Mixtura de piña fresca y dulce. A blend of fresh, sweet pineapple.", precio:9.00},
+      {id:"014", nombre:"Pisqa pink vibes", desc:"Mixtura de fresa con leche. Strawberry milk mixture.", precio:10.00},
+      {id:"015", nombre:"Frutos rojos", desc:"Mixtura de arandanos, fresa y leche. Blueberries, strawberry and milk mixture.", precio:14.00},
+      {id:"016", nombre:"Amanecer", desc:"Mixtura de jugo de naranja. Orange juice mixture", precio:9.00},
+      {id:"017", nombre:"Chicha morada (Vaso)", desc:"Bebida de maiz morado con canela y limón. Purple corn drink with cinnamon and lime.", precio:4.00}
     ]},
     {cat:"Café", items:[
-      {id:"018", nombre:"Americano", desc:"Espresso con agua.", precio:6.00},
-      {id:"019", nombre:"Capuchino", desc:"Espresso, leche y espuma.", precio:9.00},
-      {id:"020", nombre:"Latte", desc:"Espresso con leche vaporizada.", precio:9.00},
-      {id:"021", nombre:"Mocaccino", desc:"Espresso, leche y chocolate.", precio:10.00}
+      {id:"018", nombre:"Americano", desc:"Un shot de espresso con una taza de agua. A shot of espresso with a cup of water.", precio:6.00},
+      {id:"019", nombre:"Capucchino", desc:"Dos shot de espresso con poca leche y espuma. Two shots of espresso with a little milk and foam.", precio:9.00},
+      {id:"020", nombre:"Late", desc:"Un shot de espresso con mucha leche vaporizada y poca espuma. A shot of espresso with lots of steamed milk and little foam.", precio:9.00},
+      {id:"021", nombre:"Mocacchino", desc:"Espresso con leche vaporizada y un toque de jarabe de chocolate. Espresso with steamed milk and a touch of chocolate syrup..", precio:10.00}
     ]},
     {cat:"Dulces y snacks", items:[
       {id:"022", nombre:"Chifles", desc:"", precio:6.00},
-      {id:"023", nombre:"Gllt. Munición San Jorge", desc:"", precio:1.80},
+      {id:"023", nombre:"Gllt. Munición. San Jorge", desc:"", precio:1.80},
       {id:"024", nombre:"Inkachips", desc:"", precio:3.50},
       {id:"025", nombre:"Snickers 5gr", desc:"", precio:3.00},
       {id:"026", nombre:"Club social queso", desc:"", precio:1.50},
       {id:"027", nombre:"Ritz queso", desc:"", precio:1.50},
-      {id:"028", nombre:"Gllt. Costa wafer", desc:"", precio:4.50},
+      {id:"028", nombre:"Gllt. Costa Wafer", desc:"", precio:4.50},
       {id:"029", nombre:"Gllt. Chocodona", desc:"", precio:1.60},
       {id:"030", nombre:"Gllt. Gretel", desc:"", precio:1.30},
-      {id:"031", nombre:"Gllt. Minichips", desc:"", precio:3.50},
-      {id:"032", nombre:"Gllt. Coconut", desc:"", precio:1.80},
-      {id:"033", nombre:"Chocolate Kitkat", desc:"", precio:6.00},
+      {id:"031", nombre:"Gllt Minichips", desc:"", precio:3.50},
+      {id:"032", nombre:"Gllt Coconut", desc:"", precio:1.80},
+      {id:"033", nombre:"Choc. Kitkat", desc:"", precio:6.00},
       {id:"034", nombre:"Obsesión", desc:"", precio:1.20},
-      {id:"035", nombre:"Chocolate Sublime", desc:"", precio:3.50},
-      {id:"036", nombre:"Chocolate Sublime crispy", desc:"", precio:1.70}
+      {id:"035", nombre:"Choco. Sublime", desc:"", precio:3.50},
+      {id:"036", nombre:"Choc. Sublim Crispy", desc:"", precio:1.70}
     ]},
     {cat:"Bebidas", items:[
       {id:"037", nombre:"Agua San Luis", desc:"", precio:3.00},
-      {id:"038", nombre:"Gatorade mandarina", desc:"", precio:3.50},
+      {id:"038", nombre:"Gatorade Mandarina", desc:"", precio:3.50},
       {id:"039", nombre:"Agua San Carlos", desc:"", precio:1.50},
       {id:"040", nombre:"Agua con gas San Luis", desc:"", precio:3.00},
-      {id:"041", nombre:"Sporade rojo", desc:"", precio:3.50},
-      {id:"042", nombre:"Inka Kola (vidrio)", desc:"", precio:3.50},
+      {id:"041", nombre:"Sporade Rojo", desc:"", precio:3.50},
+      {id:"042", nombre:"Inka Kola (Vidrio)", desc:"", precio:3.50},
       {id:"043", nombre:"Fanta 500ml", desc:"", precio:3.50},
-      {id:"044", nombre:"Coca-Cola 600ml", desc:"", precio:4.00},
-      {id:"044b", nombre:"Inka Kola 600ml", desc:"", precio:4.00},
-      {id:"045", nombre:"Sporade blue", desc:"", precio:3.50}
+      {id:"044", nombre:"Cocacola 600ml", desc:"", precio:4.00},
+      {id:"044b", nombre:"Inka Kola 600 ml", desc:"", precio:4.00},
+      {id:"045", nombre:"Sporade Blue", desc:"", precio:3.50}
     ]}
   ];
 
