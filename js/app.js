@@ -154,6 +154,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   // ---------- NUEVO PEDIDO ----------
   var mesa = 1;
+  var editingOrderId = null;
   var mesaNumEl = document.getElementById("mesa-num");
   var cartMesaLabel = document.getElementById("cart-mesa-label");
   document.getElementById("mesa-minus").onclick = function(){ if(mesa > 1) mesa--; updateMesaUI(); };
@@ -249,6 +250,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       return {
         id: o.id,
         mesa: o.mesa,
+        customer_name: o.customer_name,
         items: o.items,
         total: parseFloat(o.total),
         estado: o.status,
@@ -269,33 +271,65 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     });
     var total = items.reduce(function(s,i){ return s + i.precio*i.cantidad; }, 0);
     
+    var customerName = "";
+    var cnInput = document.getElementById("customer-name-input");
+    if(cnInput) customerName = cnInput.value.trim();
+    
     var order = {
       mesa: mesa.toString(), items: items, total: total,
-      status: "pendiente", payment_method: null
+      status: "pendiente", payment_method: null,
+      customer_name: customerName
     };
     
-    const { error } = await supabase.from('orders').insert([order]);
+    var originalItems = [];
+    var error;
+    if (editingOrderId) {
+      // Obtener items originales antes de guardar para el delta de inventario
+      const { data: oldData } = await supabase.from('orders').select('items').eq('id', editingOrderId).single();
+      if (oldData && oldData.items) originalItems = oldData.items;
+
+      const res = await supabase.from('orders').update({
+         items: items, total: total, customer_name: customerName
+      }).eq('id', editingOrderId);
+      error = res.error;
+    } else {
+      const res = await supabase.from('orders').insert([order]);
+      error = res.error;
+    }
+    
     if(!error) {
+      // -- DEDUCCIÓN DE INVENTARIO (CON DELTA) --
+      var oldQty = {};
+      originalItems.forEach(i => oldQty[i.id] = (oldQty[i.id] || 0) + i.cantidad);
+      var newQty = {};
+      items.forEach(i => newQty[i.id] = (newQty[i.id] || 0) + i.cantidad);
       
-      // -- DEDUCCIÓN DE INVENTARIO --
       var deductions = [];
-      items.forEach(function(cartItem){
-         var matches = recipesCache.filter(function(r){ return r.product_id === cartItem.id; });
-         matches.forEach(function(m){
-            deductions.push({ id: m.inventory_id, qty: m.qty_needed * cartItem.cantidad });
-         });
+      var allIds = new Set([...Object.keys(oldQty), ...Object.keys(newQty)]);
+      allIds.forEach(function(pid) {
+          var diff = (newQty[pid] || 0) - (oldQty[pid] || 0);
+          if (diff !== 0) {
+             var matches = recipesCache.filter(function(r){ return r.product_id === pid; });
+             matches.forEach(function(m){
+                deductions.push({ id: m.inventory_id, qty: m.qty_needed * diff });
+             });
+          }
       });
+
       if(deductions.length > 0){
          supabase.rpc('deduct_stock', { deductions_input: deductions }).then(function(res){
             loadInventory();
          });
       }
-
-      document.getElementById("order-confirm").textContent = "Pedido enviado a caja · Mesa " + mesa;
+      
+      document.getElementById("order-confirm").textContent = editingOrderId ? "Pedido actualizado" : ("Pedido enviado a cocina · Mesa " + mesa);
       cart = {};
+      editingOrderId = null;
+      if(cnInput) cnInput.value = "";
       renderCart();
       sendBtn.disabled = true;
       setTimeout(function(){ document.getElementById("order-confirm").textContent = ""; }, 4000);
+      refreshOrdersFromStorage();
     } else {
       document.getElementById("order-confirm").textContent = "No se pudo enviar el pedido. Intenta de nuevo.";
       sendBtn.disabled = false;
@@ -342,10 +376,14 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     var div = document.createElement("div");
     div.className = "order-card" + (paid ? " paid" : "");
     var itemsHtml = o.items.map(function(i){ return i.cantidad+'× '+i.nombre; }).join(" · ");
+    var nameHtml = o.customer_name ? '<div class="oc-name" style="font-weight:bold; color:#fff;">'+o.customer_name+'</div>' : "";
+    
     div.innerHTML =
       '<div class="oc-top"><div class="oc-mesa">Mesa '+o.mesa+'</div><div class="oc-time">'+timeLabel(o.creado)+'</div></div>' +
+      nameHtml +
       '<div class="oc-items">'+itemsHtml+'</div>' +
       '<div class="oc-bottom"><div class="oc-total">'+fmt(o.total)+'</div><div class="oc-actions"></div></div>';
+    
     var actions = div.querySelector(".oc-actions");
     if(paid){
       var tag = document.createElement("span");
@@ -353,6 +391,24 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       tag.textContent = "Pagado · " + o.metodoPago + " · " + timeLabel(o.pagadoEn);
       actions.appendChild(tag);
     } else {
+      var editBtn = document.createElement("button");
+      editBtn.className = "edit-order-btn"; editBtn.textContent = "Editar";
+      editBtn.style.cssText = "background:transparent; border:1px solid #FF9800; color:#FF9800; padding:4px 8px; border-radius:6px; margin-right:8px; cursor:pointer;";
+      editBtn.onclick = function(){
+         document.querySelector('[data-admin-tab="pedido"]').click();
+         editingOrderId = o.id;
+         mesa = parseInt(o.mesa) || 1;
+         var mesaNumEl = document.getElementById("mesa-num");
+         if (mesaNumEl) mesaNumEl.textContent = mesa;
+         var cnInput = document.getElementById("customer-name-input");
+         if (cnInput) cnInput.value = o.customer_name || "";
+         cart = {};
+         o.items.forEach(function(i){
+             cart[i.id] = { item: {id: i.id, nombre: i.nombre, precio: i.precio}, cantidad: i.cantidad };
+         });
+         renderCart();
+      };
+      
       var yapeBtn = document.createElement("button");
       yapeBtn.className = "pay-btn yape"; yapeBtn.textContent = "Yape";
       yapeBtn.onclick = function(){ markPaid(o.id, "Yape"); };
@@ -434,6 +490,22 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 
   var formProd = document.getElementById("form-prod");
+  var prodCatSelect = document.getElementById("prod-cat");
+  var prodIdInput = document.getElementById("prod-id");
+
+  if(prodCatSelect && prodIdInput){
+    prodCatSelect.addEventListener("change", function(){
+      if(prodIdInput.value.trim() !== "") return; // Don't override if user typed something
+      var maxId = 0;
+      ALL_PRODUCTS.forEach(function(p){
+        var num = parseInt(p.id.replace(/[^0-9]/g, ''), 10);
+        if(!isNaN(num) && num > maxId) maxId = num;
+      });
+      var nextId = maxId + 1;
+      prodIdInput.value = nextId.toString().padStart(3, '0');
+    });
+  }
+
   if(formProd){
     formProd.onsubmit = async function(e){
       e.preventDefault();
