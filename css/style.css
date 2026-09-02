@@ -48,10 +48,10 @@ svg{display:block;}
 }
 .nav-inner{
     display:flex; align-items:center; justify-content:space-between;
-    padding:16px 0;
+    padding:24px 0;
 }
-.nav-inner .logo-mark{height:100px; width:auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));}
-.nav-links{display:flex; align-items:center; gap:40px; font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.02em;}
+.nav-inner .logo-mark{height:80px; width:auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));}
+.nav-links{display:flex; align-items:center; gap:36px; font-size:15px; font-weight:500; text-transform:uppercase; letter-spacing:0.02em;}
 .nav-links a{text-decoration:none; transition:color .2s ease;}
 .nav-links a:hover{color:var(--brand);}
 .nav-links .staff-link{opacity:.4;}
