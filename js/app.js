@@ -160,11 +160,13 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   document.getElementById("mesa-plus").onclick = function(){ mesa++; updateMesaUI(); };
   function updateMesaUI(){ mesaNumEl.textContent = mesa; cartMesaLabel.textContent = "Mesa " + mesa; }
 
-  var activeAdminCat = MENU[0].cat;
+  var activeAdminCat = "";
   var catScroller = document.getElementById("cat-scroller");
   var itemGrid = document.getElementById("item-grid");
 
   function renderAdminMenu(){
+    if (MENU.length === 0) return;
+    if (!activeAdminCat) activeAdminCat = MENU[0].cat;
     catScroller.innerHTML = "";
     MENU.forEach(function(g){
       var b = document.createElement("button");
