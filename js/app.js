@@ -267,8 +267,12 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   document.getElementById("mesa-plus").onclick = function(){ mesa++; updateMesaUI(); };
   function updateMesaUI(){ mesaNumEl.textContent = mesa; cartMesaLabel.textContent = "Mesa " + mesa; }
 
-  // Personal
-  var staffList = JSON.parse(localStorage.getItem("pisqa_staff")) || ["Adriana"];
+  var staffList = JSON.parse(localStorage.getItem("pisqa_staff")) || ["Adriana", "Camila", "Lissette", "Patricia"];
+  // Forzar inclusión de las 4 personas por defecto
+  ["Adriana", "Camila", "Lissette", "Patricia"].forEach(function(p){
+    if(!staffList.includes(p)) staffList.push(p);
+  });
+  localStorage.setItem("pisqa_staff", JSON.stringify(staffList));
   var staffSelect = document.getElementById("staff-select");
   function renderStaff(){
     if(!staffSelect) return;
