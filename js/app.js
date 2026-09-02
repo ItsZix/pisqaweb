@@ -463,6 +463,10 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
          });
       }
       
+      // Reproducir campana de orden
+      var bell = new Audio('https://actions.google.com/sounds/v1/alarms/dinner_bell_triangle.ogg');
+      bell.play().catch(function(e){ console.log("Audio play blocked", e); });
+      
       document.getElementById("order-confirm").textContent = editingOrderId ? "Pedido actualizado" : ("Pedido enviado a cocina · Mesa " + mesa);
       cart = {};
       editingOrderId = null;
@@ -498,11 +502,6 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     var pending = orders.filter(function(o){ return o.estado === "pendiente"; }).sort(function(a,b){ return a.creado - b.creado; });
     var paidToday = orders.filter(function(o){ return o.estado === "pagado" && isToday(o.pagadoEn); }).sort(function(a,b){ return b.pagadoEn - a.pagadoEn; });
 
-    if(pending.length > lastPendingCount) {
-       // Play bell sound
-       var bell = new Audio('https://actions.google.com/sounds/v1/alarms/dinner_bell_triangle.ogg');
-       bell.play().catch(function(e){ console.log("Audio play blocked", e); });
-    }
     lastPendingCount = pending.length;
 
     sumPendientes.textContent = pending.length;
