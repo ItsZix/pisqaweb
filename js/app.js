@@ -44,11 +44,14 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
           list.appendChild(div);
        });
     }
+    // Scroll suave hasta el tope del menú para que el usuario no se pierda
+    document.getElementById("public-menu-view").scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   window.closePublicMenu = function(){
     document.getElementById("public-menu-view").classList.add("hidden");
     document.getElementById("galeria").classList.remove("hidden");
+    document.getElementById("galeria").scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   async function loadMenu(){
