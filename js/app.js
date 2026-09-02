@@ -160,6 +160,83 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   var tabMenu = document.getElementById("tab-menu");
   var tabHome = document.getElementById("tab-home");
 
+  // ---------- FLUJO DE PEDIDO ----------
+  function showPedidoFlowStart(){
+    document.getElementById("pedido-flow-start").style.display = "flex";
+    document.getElementById("pedido-flow-mesas").style.display = "none";
+    document.getElementById("pedido-flow-lista").style.display = "none";
+    document.getElementById("pedido-flow-pos").style.display = "none";
+  }
+  function showPedidoFlowMesas(){
+    document.getElementById("pedido-flow-start").style.display = "none";
+    document.getElementById("pedido-flow-mesas").style.display = "flex";
+  }
+  async function showPedidoFlowLista(){
+    document.getElementById("pedido-flow-start").style.display = "none";
+    document.getElementById("pedido-flow-lista").style.display = "flex";
+    
+    // Load pending orders
+    var listEl = document.getElementById("flow-pending-list");
+    listEl.innerHTML = "<p style='color:#aaa;'>Cargando pedidos pendientes...</p>";
+    var orders = await loadOrders();
+    var pending = orders.filter(function(o){ return o.estado === "pendiente"; }).sort(function(a,b){ return a.creado - b.creado; });
+    listEl.innerHTML = "";
+    if(pending.length === 0){
+       listEl.innerHTML = "<p style='color:#aaa;'>No hay pedidos pendientes para modificar.</p>";
+       return;
+    }
+    pending.forEach(function(o){
+       var div = document.createElement("div");
+       div.style.cssText = "background:var(--pos-bg); padding:16px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;";
+       var name = o.customer_name ? o.customer_name : "Mesa " + o.mesa;
+       div.innerHTML = "<div style='color:#fff; font-size:16px;'><b>" + name + "</b><br><span style='color:#aaa; font-size:14px;'>" + timeLabel(o.creado) + " · S/ " + o.total + "</span></div>" +
+                       "<button style='background:transparent; border:1px solid #FF9800; color:#FF9800; padding:8px 16px; border-radius:6px; cursor:pointer;'>Modificar</button>";
+       div.querySelector("button").onclick = function(){
+           editingOrderId = o.id;
+           mesa = parseInt(o.mesa) || 1;
+           var mesaNumEl = document.getElementById("mesa-num");
+           if (mesaNumEl) mesaNumEl.textContent = mesa;
+           var cnInput = document.getElementById("customer-name-input");
+           if (cnInput) cnInput.value = o.customer_name || "";
+           cart = {};
+           o.items.forEach(function(i){
+               cart[i.id] = { item: {id: i.id, nombre: i.nombre, precio: i.precio}, cantidad: i.cantidad };
+           });
+           renderCart();
+           showPedidoFlowPOS();
+       };
+       listEl.appendChild(div);
+    });
+  }
+  function showPedidoFlowPOS(){
+    document.getElementById("pedido-flow-start").style.display = "none";
+    document.getElementById("pedido-flow-mesas").style.display = "none";
+    document.getElementById("pedido-flow-lista").style.display = "none";
+    document.getElementById("pedido-flow-pos").style.display = "block";
+  }
+
+  var btnNuevo = document.getElementById("btn-flow-nuevo");
+  if(btnNuevo) btnNuevo.onclick = function(){ showPedidoFlowMesas(); };
+  var btnMod = document.getElementById("btn-flow-modificar");
+  if(btnMod) btnMod.onclick = function(){ showPedidoFlowLista(); };
+  var btnBack1 = document.getElementById("btn-flow-back-1");
+  if(btnBack1) btnBack1.onclick = function(){ showPedidoFlowStart(); };
+  var btnBack2 = document.getElementById("btn-flow-back-2");
+  if(btnBack2) btnBack2.onclick = function(){ showPedidoFlowStart(); };
+  
+  document.querySelectorAll(".mesa-btn").forEach(function(btn){
+     btn.onclick = function(){
+         mesa = parseInt(btn.getAttribute("data-mesa"));
+         updateMesaUI();
+         editingOrderId = null;
+         cart = {};
+         var cnInput = document.getElementById("customer-name-input");
+         if (cnInput) cnInput.value = "";
+         renderCart();
+         showPedidoFlowPOS();
+     };
+  });
+
   document.querySelectorAll(".admin-tab-btn").forEach(function(btn){
     btn.onclick = function(){
       document.querySelectorAll(".admin-tab-btn").forEach(function(b){ b.classList.remove("active"); });
@@ -175,7 +252,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       var targetTab = document.getElementById("tab-" + t);
       if(targetTab) targetTab.classList.remove("hidden");
       
-      if(t === "pedido") updateMesaUI();
+      if(t === "pedido") { showPedidoFlowStart(); updateMesaUI(); }
       if(t === "caja") refreshOrdersFromStorage();
       if(t === "inventario") loadInventory();
     };
@@ -294,8 +371,12 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   document.getElementById("clear-cart-btn").onclick = function(){
     cart = {};
+    editingOrderId = null;
+    var cnInput = document.getElementById("customer-name-input");
+    if(cnInput) cnInput.value = "";
     renderCart();
     document.getElementById("order-confirm").textContent = "";
+    showPedidoFlowStart();
   };
 
   async function loadOrders(){
@@ -388,7 +469,10 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       if(cnInput) cnInput.value = "";
       renderCart();
       sendBtn.disabled = true;
-      setTimeout(function(){ document.getElementById("order-confirm").textContent = ""; }, 4000);
+      setTimeout(function(){ 
+          document.getElementById("order-confirm").textContent = ""; 
+          showPedidoFlowStart();
+      }, 3000);
       refreshOrdersFromStorage();
     } else {
       document.getElementById("order-confirm").textContent = "No se pudo enviar el pedido. Intenta de nuevo.";
@@ -466,6 +550,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       editBtn.style.cssText = "background:transparent; border:1px solid #FF9800; color:#FF9800; padding:4px 8px; border-radius:6px; margin-right:8px; cursor:pointer;";
       editBtn.onclick = function(){
          document.querySelector('[data-admin-tab="pedido"]').click();
+         showPedidoFlowPOS();
          editingOrderId = o.id;
          mesa = parseInt(o.mesa) || 1;
          var mesaNumEl = document.getElementById("mesa-num");

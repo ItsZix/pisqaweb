@@ -322,8 +322,43 @@
 
       <!-- PESTAÑA: TOMAR PEDIDO (POS) -->
       <div id="tab-pedido" class="hidden">
-        <div class="order-layout">
-          <div class="pos-menu-area">
+        
+        <!-- PANTALLA 1: Seleccion de accion -->
+        <div id="pedido-flow-start" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:24px;">
+          <h2 style="color:#fff; font-size:24px; font-family:Fraunces,serif;">¿Qué deseas hacer?</h2>
+          <div style="display:flex; gap:16px;">
+            <button id="btn-flow-nuevo" style="background:var(--pos-card); border:1px solid var(--pos-border); padding:24px 32px; border-radius:12px; color:#fff; font-size:18px; cursor:pointer; min-width:200px;">Nuevo Pedido</button>
+            <button id="btn-flow-modificar" style="background:transparent; border:1px solid #FF9800; padding:24px 32px; border-radius:12px; color:#FF9800; font-size:18px; cursor:pointer; min-width:200px;">Modificar Pedido</button>
+          </div>
+        </div>
+
+        <!-- PANTALLA 2: Seleccion de mesa -->
+        <div id="pedido-flow-mesas" class="hidden" style="display:none; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:24px;">
+          <h2 style="color:#fff; font-size:24px; font-family:Fraunces,serif;">Selecciona la Mesa</h2>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <button class="mesa-btn" data-mesa="1" style="background:var(--pos-card); border:1px solid var(--pos-border); padding:24px 48px; border-radius:12px; color:#fff; font-size:24px; cursor:pointer;">Mesa 1</button>
+            <button class="mesa-btn" data-mesa="2" style="background:var(--pos-card); border:1px solid var(--pos-border); padding:24px 48px; border-radius:12px; color:#fff; font-size:24px; cursor:pointer;">Mesa 2</button>
+            <button class="mesa-btn" data-mesa="3" style="background:var(--pos-card); border:1px solid var(--pos-border); padding:24px 48px; border-radius:12px; color:#fff; font-size:24px; cursor:pointer;">Mesa 3</button>
+            <button class="mesa-btn" data-mesa="4" style="background:var(--pos-card); border:1px solid var(--pos-border); padding:24px 48px; border-radius:12px; color:#fff; font-size:24px; cursor:pointer;">Mesa 4</button>
+          </div>
+          <button id="btn-flow-back-1" style="background:transparent; border:none; color:#aaa; cursor:pointer; margin-top:16px;">Volver</button>
+        </div>
+
+        <!-- PANTALLA 3: Seleccion de pedido a modificar -->
+        <div id="pedido-flow-lista" class="hidden" style="display:none; flex-direction:column; align-items:center; height:100%; padding:24px; box-sizing:border-box;">
+          <div style="width:100%; max-width:600px; display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+            <h2 style="color:#fff; font-size:24px; font-family:Fraunces,serif; margin:0;">Modificar Pedido</h2>
+            <button id="btn-flow-back-2" style="background:transparent; border:1px solid #555; padding:8px 16px; border-radius:6px; color:#aaa; cursor:pointer;">Volver</button>
+          </div>
+          <div id="flow-pending-list" style="width:100%; max-width:600px; display:flex; flex-direction:column; gap:16px; overflow-y:auto;">
+             <!-- Pedidos pendientes iran aqui -->
+          </div>
+        </div>
+
+        <!-- PANTALLA 4: POS -->
+        <div id="pedido-flow-pos" class="hidden" style="display:none; height:100%;">
+          <div class="order-layout">
+            <div class="pos-menu-area">
             <div class="pos-header">
               <div class="mesa-picker">
                 <label>Mesa #</label>
@@ -372,6 +407,7 @@
               <button class="clear-cart-btn" id="clear-cart-btn">Cancelar y vaciar ticket</button>
               <div class="order-confirm" id="order-confirm"></div>
             </div>
+          </div>
           </div>
         </div>
       </div>
