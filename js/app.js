@@ -98,7 +98,16 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     return '<svg '+(extra||'')+' viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:24px; height:24px; stroke:var(--brand);"><use href="#'+id+'"/></svg>';
   }
 
-  // ---------- PUBLIC MENU REMOVED ----------
+  // ---------- HERO SLIDESHOW ----------
+  var heroSlides = document.querySelectorAll('.hero-slide');
+  if(heroSlides.length > 0){
+    var currentSlide = 0;
+    setInterval(function(){
+      heroSlides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % heroSlides.length;
+      heroSlides[currentSlide].classList.add('active');
+    }, 6000); // Ritmo más pausado y profesional
+  }
 
   // ---------- LOGIN / VIEW SWITCH ----------
   var publicView = document.getElementById("public-view");
