@@ -464,7 +464,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
       
       // Reproducir campana de orden
-      var bell = new Audio('https://actions.google.com/sounds/v1/alarms/dinner_bell_triangle.ogg');
+      var bell = new Audio('sound/pedidolisto.mp3');
       bell.play().catch(function(e){ console.log("Audio play blocked", e); });
       
       document.getElementById("order-confirm").textContent = editingOrderId ? "Pedido actualizado" : ("Pedido enviado a cocina · Mesa " + mesa);
