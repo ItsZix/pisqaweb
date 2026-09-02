@@ -142,14 +142,13 @@ svg{display:block;}
 }
 
 .gallery-overlay{
-    position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 60%);
+    position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 70%);
     display:flex; flex-direction:column; justify-content:flex-end; padding:30px;
-    opacity:0; transition:opacity 0.4s ease;
+    transition:background 0.4s ease;
 }
 .gallery-item:hover img{transform:scale(1.05);}
-.gallery-item:hover .gallery-overlay{opacity:1;}
-.gallery-overlay h3{color:var(--paper); font-size:24px; margin-bottom:8px;}
-.gallery-overlay p{color:rgba(255,255,255,0.8); font-size:14px; margin:0;}
+.gallery-overlay h3{color:var(--paper); font-size:24px; margin-bottom:8px; text-shadow:0 2px 4px rgba(0,0,0,0.5);}
+.gallery-overlay p{color:rgba(255,255,255,0.9); font-size:14px; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);}
 
 
 /* ---- location ---- */
