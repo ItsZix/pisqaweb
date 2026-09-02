@@ -53,7 +53,14 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   async function loadMenu(){
     const { data, error } = await supabase.from('products').select('*').order('category').order('id');
-    if(!error && data){
+    if (error) {
+       alert("Error conectando a Supabase: " + JSON.stringify(error));
+       return;
+    }
+    if (data) {
+       if (data.length === 0) {
+           console.warn("La tabla de productos está vacía.");
+       }
        ALL_PRODUCTS = data;
        var groups = {};
        data.forEach(function(p){
