@@ -62,6 +62,11 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
            console.warn("La tabla de productos está vacía.");
        }
        ALL_PRODUCTS = data;
+       ALL_PRODUCTS.sort(function(a, b){
+         var numA = parseInt(a.id.replace(/[^0-9]/g, ''), 10) || 0;
+         var numB = parseInt(b.id.replace(/[^0-9]/g, ''), 10) || 0;
+         return numA - numB;
+       });
        var groups = {};
        data.forEach(function(p){
          if(!groups[p.category]) groups[p.category] = { cat: p.category, items: [] };
@@ -161,6 +166,32 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   document.getElementById("mesa-plus").onclick = function(){ mesa++; updateMesaUI(); };
   function updateMesaUI(){ mesaNumEl.textContent = mesa; cartMesaLabel.textContent = "Mesa " + mesa; }
 
+  // Personal
+  var staffList = JSON.parse(localStorage.getItem("pisqa_staff")) || ["Adriana"];
+  var staffSelect = document.getElementById("staff-select");
+  function renderStaff(){
+    if(!staffSelect) return;
+    staffSelect.innerHTML = "";
+    staffList.forEach(function(s){
+      var op = document.createElement("option");
+      op.value = s; op.textContent = "Atendido por: " + s;
+      staffSelect.appendChild(op);
+    });
+  }
+  renderStaff();
+  var addStaffBtn = document.getElementById("add-staff-btn");
+  if(addStaffBtn){
+    addStaffBtn.onclick = function(){
+      var name = prompt("Nombre de la nueva persona:");
+      if(name && name.trim()!==""){
+         staffList.push(name.trim());
+         localStorage.setItem("pisqa_staff", JSON.stringify(staffList));
+         renderStaff();
+         staffSelect.value = name.trim();
+      }
+    };
+  }
+
   var activeAdminCat = "";
   var catScroller = document.getElementById("cat-scroller");
   var itemGrid = document.getElementById("item-grid");
@@ -251,6 +282,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         id: o.id,
         mesa: o.mesa,
         customer_name: o.customer_name,
+        staff_name: o.staff_name,
         items: o.items,
         total: parseFloat(o.total),
         estado: o.status,
@@ -275,10 +307,14 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     var cnInput = document.getElementById("customer-name-input");
     if(cnInput) customerName = cnInput.value.trim();
     
+    var staffName = "";
+    if(staffSelect) staffName = staffSelect.value;
+    
     var order = {
       mesa: mesa.toString(), items: items, total: total,
       status: "pendiente", payment_method: null,
-      customer_name: customerName
+      customer_name: customerName,
+      staff_name: staffName
     };
     
     var originalItems = [];
@@ -289,7 +325,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       if (oldData && oldData.items) originalItems = oldData.items;
 
       const res = await supabase.from('orders').update({
-         items: items, total: total, customer_name: customerName
+         items: items, total: total, customer_name: customerName, staff_name: staffName
       }).eq('id', editingOrderId);
       error = res.error;
     } else {
@@ -342,6 +378,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   var sumPendientes = document.getElementById("sum-pendientes");
   var sumCobrado = document.getElementById("sum-cobrado");
   var sumPagados = document.getElementById("sum-pagados");
+  var lastPendingCount = 0;
 
   function isToday(ts){
     var d = new Date(ts), now = new Date();
@@ -352,6 +389,13 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   function renderOrders(orders){
     var pending = orders.filter(function(o){ return o.estado === "pendiente"; }).sort(function(a,b){ return a.creado - b.creado; });
     var paidToday = orders.filter(function(o){ return o.estado === "pagado" && isToday(o.pagadoEn); }).sort(function(a,b){ return b.pagadoEn - a.pagadoEn; });
+
+    if(pending.length > lastPendingCount) {
+       // Play bell sound
+       var bell = new Audio('https://actions.google.com/sounds/v1/alarms/dinner_bell_triangle.ogg');
+       bell.play().catch(function(e){ console.log("Audio play blocked", e); });
+    }
+    lastPendingCount = pending.length;
 
     sumPendientes.textContent = pending.length;
     sumPagados.textContent = paidToday.length;
@@ -376,7 +420,9 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     var div = document.createElement("div");
     div.className = "order-card" + (paid ? " paid" : "");
     var itemsHtml = o.items.map(function(i){ return i.cantidad+'× '+i.nombre; }).join(" · ");
-    var nameHtml = o.customer_name ? '<div class="oc-name" style="font-weight:bold; color:#fff;">'+o.customer_name+'</div>' : "";
+    var nameHtml = "";
+    if (o.customer_name) nameHtml += '<div class="oc-name" style="font-weight:bold; color:#fff;">Cliente: '+o.customer_name+'</div>';
+    if (o.staff_name) nameHtml += '<div style="font-size:12px; color:#aaa; margin-bottom:8px;">Atendido por: '+o.staff_name+'</div>';
     
     div.innerHTML =
       '<div class="oc-top"><div class="oc-mesa">Mesa '+o.mesa+'</div><div class="oc-time">'+timeLabel(o.creado)+'</div></div>' +
