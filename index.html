@@ -254,6 +254,12 @@
       <button class="admin-tab-btn" data-admin-tab="caja">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;margin-right:6px;margin-bottom:-4px;"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg> Caja / Tiempo Real
       </button>
+      <button class="admin-tab-btn" data-admin-tab="inventario">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;margin-right:6px;margin-bottom:-4px;"><path d="M20 7h-3a2 2 0 0 1-2-2V2"/><path d="M9 18a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7l4 4v10a2 2 0 0 1-2 2Z"/><path d="M3 15h6"/><path d="M3 18h6"/></svg> Inventario
+      </button>
+      <button class="admin-tab-btn" data-admin-tab="menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;margin-right:6px;margin-bottom:-4px;"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/></svg> Menú
+      </button>
     </div>
     <button class="admin-logout" id="logout-btn">Salir</button>
   </div>
@@ -350,6 +356,55 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- PESTAÑA: INVENTARIO -->
+      <div id="tab-inventario" class="hidden">
+        <div class="dashboard-header">
+          <h2>Almacén e Insumos</h2>
+          <div class="refresh-note">Control de stock en tiempo real</div>
+        </div>
+        
+        <div class="dashboard-grid">
+          <div class="board-column">
+            <div class="caja-col-head">Niveles de Stock actuales</div>
+            <div id="inventory-list" style="display:flex; flex-direction:column; gap:12px;"></div>
+          </div>
+          <div class="board-column">
+            <div class="caja-col-head">Agregar / Editar Insumo</div>
+            <form id="form-inv" style="display:flex; flex-direction:column; gap:16px;">
+              <input type="text" id="inv-name" placeholder="Nombre del insumo (Ej: Fresas frescas)" required style="padding:12px; border-radius:8px; border:none; background:rgba(255,255,255,0.05); color:#fff;">
+              <input type="number" id="inv-qty" placeholder="Cantidad actual" required style="padding:12px; border-radius:8px; border:none; background:rgba(255,255,255,0.05); color:#fff;">
+              <input type="text" id="inv-unit" placeholder="Unidad (Ej: gr, ml, unid)" required style="padding:12px; border-radius:8px; border:none; background:rgba(255,255,255,0.05); color:#fff;">
+              <button type="submit" class="btn btn-solid" style="background:var(--gold); color:var(--black); border:none;">Guardar Insumo</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA: MENÚ -->
+      <div id="tab-menu" class="hidden">
+        <div class="dashboard-header">
+          <h2>Gestión de la Carta</h2>
+          <div class="refresh-note">Agrega o modifica productos de la carta</div>
+        </div>
+        <div class="dashboard-grid">
+          <div class="board-column" style="max-height:600px; overflow-y:auto;">
+            <div class="caja-col-head">Productos Actuales</div>
+            <div id="product-list" style="display:flex; flex-direction:column; gap:12px;"></div>
+          </div>
+          <div class="board-column">
+            <div class="caja-col-head">Nuevo Producto</div>
+            <form id="form-prod" style="display:flex; flex-direction:column; gap:16px;">
+              <input type="text" id="prod-id" placeholder="Código (Ej: 050)" required style="padding:12px; border-radius:8px; border:none; background:rgba(255,255,255,0.05); color:#fff;">
+              <input type="text" id="prod-cat" placeholder="Categoría (Ej: Postres, Jugos)" required style="padding:12px; border-radius:8px; border:none; background:rgba(255,255,255,0.05); color:#fff;">
+              <input type="text" id="prod-name" placeholder="Nombre del producto" required style="padding:12px; border-radius:8px; border:none; background:rgba(255,255,255,0.05); color:#fff;">
+              <input type="text" id="prod-desc" placeholder="Descripción breve" style="padding:12px; border-radius:8px; border:none; background:rgba(255,255,255,0.05); color:#fff;">
+              <input type="number" step="0.10" id="prod-price" placeholder="Precio (Ej: 15.00)" required style="padding:12px; border-radius:8px; border:none; background:rgba(255,255,255,0.05); color:#fff;">
+              <button type="submit" class="btn btn-solid" style="background:#4CAF50; color:#fff; border:none;">Guardar Producto</button>
+            </form>
+          </div>
+        </div>
       </div>
 
     </div>

@@ -14,66 +14,26 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     "Cofee Drinks":"ic-coffee", "DULCE - SNACK":"ic-cookie", "BEBIDAS":"ic-bottle"
   };
 
-  var MENU = [
-    {cat:"SNACKS", items:[
-      {id:"001", nombre:"Sandwich de Chicharron", desc:"Crispy pork belly sandwich.", precio:14.00},
-      {id:"002", nombre:"Sándwich de Lomo", desc:"Loin steak sandwich.", precio:13.00},
-      {id:"003", nombre:"Sándwich de Pavo", desc:"Turkey sandwich.", precio:15.00},
-      {id:"004", nombre:"Croissant Mixto", desc:"Chicken, peach, and mayonnaise croissant. Crosaint de pollo, durazno y mayonesa.", precio:12.50},
-      {id:"005", nombre:"Croissant Clásico", desc:"Classic ham and cheese croissant. Croissant clasico de jamon y queso.", precio:9.00},
-      {id:"006", nombre:"Empanadas", desc:"", precio:6.00}
-    ]},
-    {cat:"Postres", items:[
-      {id:"007", nombre:"Cuchareable", desc:"Postre del día. Dessert of the day.", precio:10.00},
-      {id:"008", nombre:"Crema volteada", desc:"Caramel custard.", precio:6.00},
-      {id:"009", nombre:"Torta de vainilla", desc:"Vanilla cake.", precio:5.00},
-      {id:"010", nombre:"Torta de Chocolate", desc:"Chocolat cake.", precio:6.00}
-    ]},
-    {cat:"Jugos", items:[
-      {id:"011", nombre:"Especial Pisqa", desc:"(Jugo especial - Special Juice) Mixtura de papaya con leche y algarrobina. A blend of papaya with milk, carob syrup, and", precio:12.00},
-      {id:"012", nombre:"Fusión Pisqa", desc:"(Jugo surtido - Mixed juice) Mixtura de papaya y piña. Papaya, pineapple and aplle mixture.", precio:9.00},
-      {id:"013", nombre:"Piñasqa", desc:"(Jugo de Piña - Pineapple juice) Mixtura de piña fresca y dulce. A blend of fresh, sweet pineapple.", precio:9.00},
-      {id:"014", nombre:"Pisqa pink vibes", desc:"Mixtura de fresa con leche. Strawberry milk mixture.", precio:10.00},
-      {id:"015", nombre:"Frutos rojos", desc:"Mixtura de arandanos, fresa y leche. Blueberries, strawberry and milk mixture.", precio:14.00},
-      {id:"016", nombre:"Amanecer", desc:"Mixtura de jugo de naranja. Orange juice mixture", precio:9.00},
-      {id:"017", nombre:"Chicha morada (Vaso)", desc:"Bebida de maiz morado con canela y limón. Purple corn drink with cinnamon and lime.", precio:4.00}
-    ]},
-    {cat:"Cofee Drinks", items:[
-      {id:"018", nombre:"Americano", desc:"Un shot de espresso con una taza de agua. A shot of espresso with a cup of water.", precio:6.00},
-      {id:"019", nombre:"Capucchino", desc:"Dos shot de espresso con poca leche y espuma. Two shots of espresso with a little milk and foam.", precio:9.00},
-      {id:"020", nombre:"Late", desc:"Un shot de espresso con mucha leche vaporizada y poca espuma. A shot of espresso with lots of steamed milk and little foam.", precio:9.00},
-      {id:"021", nombre:"Mocacchino", desc:"Espresso con leche vaporizada y un toque de jarabe de chocolate. Espresso with steamed milk and a touch of chocolate syrup..", precio:10.00}
-    ]},
-    {cat:"DULCE - SNACK", items:[
-      {id:"022", nombre:"Chifles", desc:"", precio:6.00},
-      {id:"023", nombre:"Gllt. Munición. San Jorge", desc:"", precio:1.80},
-      {id:"024", nombre:"Inkachips", desc:"", precio:3.50},
-      {id:"025", nombre:"Snickers 5gr", desc:"", precio:3.00},
-      {id:"026", nombre:"Club social queso", desc:"", precio:1.50},
-      {id:"027", nombre:"Ritz queso", desc:"", precio:1.50},
-      {id:"028", nombre:"Gllt. Costa Wafer", desc:"", precio:4.50},
-      {id:"029", nombre:"Gllt. Chocodona", desc:"", precio:1.60},
-      {id:"030", nombre:"Gllt. Gretel", desc:"", precio:1.30},
-      {id:"031", nombre:"Gllt Minichips", desc:"", precio:3.50},
-      {id:"032", nombre:"Gllt Coconut", desc:"", precio:1.80},
-      {id:"033", nombre:"Choc. Kitkat", desc:"", precio:6.00},
-      {id:"034", nombre:"Obsesión", desc:"", precio:1.20},
-      {id:"035", nombre:"Choco. Sublime", desc:"", precio:3.50},
-      {id:"036", nombre:"Choc. Sublim Crispy", desc:"", precio:1.70}
-    ]},
-    {cat:"BEBIDAS", items:[
-      {id:"037", nombre:"Agua San Luis", desc:"", precio:3.00},
-      {id:"038", nombre:"Gatorade Mandarina", desc:"", precio:3.50},
-      {id:"039", nombre:"Agua San Carlos", desc:"", precio:1.50},
-      {id:"040", nombre:"Agua con gas San Luis", desc:"", precio:3.00},
-      {id:"041", nombre:"Sporade Rojo", desc:"", precio:3.50},
-      {id:"042", nombre:"Inka Kola (Vidrio)", desc:"", precio:3.50},
-      {id:"043", nombre:"Fanta 500ml", desc:"", precio:3.50},
-      {id:"044", nombre:"Cocacola 600ml", desc:"", precio:4.00},
-      {id:"044b", nombre:"Inka Kola 600 ml", desc:"", precio:4.00},
-      {id:"045", nombre:"Sporade Blue", desc:"", precio:3.50}
-    ]}
-  ];
+  var MENU = [];
+  var ALL_PRODUCTS = [];
+  
+  async function loadMenu(){
+    const { data, error } = await supabase.from('products').select('*').order('category').order('id');
+    if(!error && data){
+       ALL_PRODUCTS = data;
+       var groups = {};
+       data.forEach(function(p){
+         if(!groups[p.category]) groups[p.category] = { cat: p.category, items: [] };
+         groups[p.category].items.push({ id: p.id, nombre: p.name, desc: p.description, precio: parseFloat(p.price) });
+       });
+       MENU = Object.values(groups);
+       if(MENU.length > 0){
+          activeAdminCat = MENU[0].cat;
+          renderAdminMenu();
+       }
+       renderProductList();
+    }
+  }
 
   document.getElementById("year-now").textContent = new Date().getFullYear();
 
@@ -122,22 +82,31 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     window.scrollTo(0,0);
   };
 
-  // ---------- ADMIN TABS ----------
   var adminTabBtns = document.querySelectorAll(".admin-tab-btn");
   var tabPedido = document.getElementById("tab-pedido");
   var tabCaja = document.getElementById("tab-caja");
+  var tabInv = document.getElementById("tab-inventario");
+  var tabMenu = document.getElementById("tab-menu");
+  
   adminTabBtns.forEach(function(btn){
     btn.onclick = function(){
       adminTabBtns.forEach(function(b){ b.classList.remove("active"); });
       btn.classList.add("active");
       var which = btn.getAttribute("data-admin-tab");
+      tabPedido.classList.add("hidden");
+      tabCaja.classList.add("hidden");
+      tabInv.classList.add("hidden");
+      tabMenu.classList.add("hidden");
       if(which === "pedido"){
         tabPedido.classList.remove("hidden");
-        tabCaja.classList.add("hidden");
-      } else {
-        tabPedido.classList.add("hidden");
+      } else if (which === "caja"){
         tabCaja.classList.remove("hidden");
         refreshOrdersFromStorage();
+      } else if (which === "inventario"){
+        tabInv.classList.remove("hidden");
+        loadInventory();
+      } else if (which === "menu"){
+        tabMenu.classList.remove("hidden");
       }
     };
   });
@@ -264,6 +233,21 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
     const { error } = await supabase.from('orders').insert([order]);
     if(!error) {
+      
+      // -- DEDUCCIÓN DE INVENTARIO --
+      var deductions = [];
+      items.forEach(function(cartItem){
+         var matches = recipesCache.filter(function(r){ return r.product_id === cartItem.id; });
+         matches.forEach(function(m){
+            deductions.push({ id: m.inventory_id, qty: m.qty_needed * cartItem.cantidad });
+         });
+      });
+      if(deductions.length > 0){
+         supabase.rpc('deduct_stock', { deductions_input: deductions }).then(function(res){
+            loadInventory();
+         });
+      }
+
       document.getElementById("order-confirm").textContent = "Pedido enviado a caja · Mesa " + mesa;
       cart = {};
       renderCart();
@@ -332,11 +316,15 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       var efvBtn = document.createElement("button");
       efvBtn.className = "pay-btn efectivo"; efvBtn.textContent = "Efectivo";
       efvBtn.onclick = function(){ markPaid(o.id, "Efectivo"); };
+      var cardBtn = document.createElement("button");
+      cardBtn.className = "pay-btn efectivo"; cardBtn.style.background = "#2196F3"; cardBtn.textContent = "Tarjeta";
+      cardBtn.onclick = function(){ markPaid(o.id, "Tarjeta"); };
       var cancelBtn = document.createElement("button");
       cancelBtn.className = "cancel-btn"; cancelBtn.textContent = "Cancelar";
       cancelBtn.onclick = function(){ cancelOrder(o.id); };
       actions.appendChild(yapeBtn);
       actions.appendChild(efvBtn);
+      actions.appendChild(cardBtn);
       actions.appendChild(cancelBtn);
     }
     return div;
@@ -358,10 +346,127 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   function refreshOrdersFromStorage(){ loadOrders().then(renderOrders); }
   document.getElementById("manual-refresh").onclick = function(e){ e.preventDefault(); refreshOrdersFromStorage(); };
 
+  // ---------- GESTIÓN DE MENÚ ----------
+  function renderProductList(){
+    var list = document.getElementById("product-list");
+    if(!list) return;
+    list.innerHTML = "";
+    if(ALL_PRODUCTS.length === 0){
+      list.innerHTML = '<div style="color:#aaa;">No hay productos en el menú.</div>';
+      return;
+    }
+    ALL_PRODUCTS.forEach(function(p){
+      var div = document.createElement("div");
+      div.style.cssText = "padding:16px; background:var(--pos-card); border-radius:12px; border:1px solid var(--pos-border);";
+      div.innerHTML = 
+        '<div style="display:flex; justify-content:space-between; margin-bottom:4px;">' +
+        '<strong style="color:#fff; font-size:16px;">' + p.id + ' - ' + p.name + '</strong>' +
+        '<span style="color:var(--gold); font-family:Fraunces,serif;">' + fmt(parseFloat(p.price)) + '</span>' +
+        '</div>' +
+        '<div style="font-size:13px; color:#aaa; margin-bottom:12px;">' + p.category + ' | ' + p.description + '</div>' +
+        '<button class="delete-prod" style="background:transparent; border:1px solid #FF6B6B; color:#FF6B6B; padding:6px 12px; border-radius:6px; font-size:12px;">Eliminar</button>';
+      div.querySelector(".delete-prod").onclick = async function(){
+         if(confirm("¿Eliminar " + p.name + "?")){
+            await supabase.from("products").delete().eq("id", p.id);
+            loadMenu();
+         }
+      };
+      list.appendChild(div);
+    });
+  }
+
+  var formProd = document.getElementById("form-prod");
+  if(formProd){
+    formProd.onsubmit = async function(e){
+      e.preventDefault();
+      var p = {
+        id: document.getElementById("prod-id").value,
+        category: document.getElementById("prod-cat").value,
+        name: document.getElementById("prod-name").value,
+        description: document.getElementById("prod-desc").value,
+        price: parseFloat(document.getElementById("prod-price").value)
+      };
+      const { error } = await supabase.from('products').upsert([p]);
+      if(!error) {
+         formProd.reset();
+         loadMenu();
+      } else {
+         alert("Error al guardar producto.");
+      }
+    };
+  }
+
+  // ---------- GESTIÓN DE INVENTARIO ----------
+  var inventoryCache = [];
+  var recipesCache = [];
+  
+  async function loadInventory(){
+    var inv = await supabase.from('inventory').select('*').order('name');
+    var rec = await supabase.from('recipes').select('*');
+    if(inv.data) inventoryCache = inv.data;
+    if(rec.data) recipesCache = rec.data;
+    renderInventory();
+  }
+
+  function renderInventory(){
+    var list = document.getElementById("inventory-list");
+    if(!list) return;
+    list.innerHTML = "";
+    if(inventoryCache.length === 0){
+      list.innerHTML = '<div style="color:#aaa;">No hay insumos. Ejecuta el código SQL en Supabase para crear las tablas.</div>';
+      return;
+    }
+    inventoryCache.forEach(function(item){
+      var div = document.createElement("div");
+      div.style.cssText = "display:flex; justify-content:space-between; padding:16px; background:var(--pos-card); border-radius:12px; border:1px solid var(--pos-border);";
+      div.innerHTML = 
+        '<div style="font-size:16px; color:#fff; font-weight:600;">'+item.name+'</div>' +
+        '<div style="display:flex; align-items:center; gap:12px;">' +
+        '<div style="font-size:18px; color:var(--gold); font-family:Fraunces,serif;">' + 
+          item.stock_qty + ' <span style="font-size:12px; color:#aaa; font-family:Work Sans,sans-serif;">' + item.unit + '</span>' +
+        '</div>' +
+        '<button class="delete-inv" style="background:transparent; border:none; color:#FF6B6B; font-size:12px; text-decoration:underline;">Eliminar</button>' +
+        '</div>';
+      div.querySelector(".delete-inv").onclick = async function(){
+         if(confirm("¿Eliminar " + item.name + " del almacén?")){
+            await supabase.from("inventory").delete().eq("id", item.id);
+            loadInventory();
+         }
+      };
+      list.appendChild(div);
+    });
+  }
+
+  var formInv = document.getElementById("form-inv");
+  if(formInv){
+    formInv.onsubmit = async function(e){
+      e.preventDefault();
+      var ins = {
+        name: document.getElementById("inv-name").value,
+        stock_qty: parseFloat(document.getElementById("inv-qty").value),
+        unit: document.getElementById("inv-unit").value
+      };
+      const { error } = await supabase.from('inventory').insert([ins]);
+      if(!error) {
+         formInv.reset();
+         loadInventory();
+      } else {
+         alert("Error al guardar insumo.");
+      }
+    };
+  }
+
+  // Pre-load on startup so we can deduct immediately
+  loadMenu();
+  loadInventory();
+
   // Polling de respaldo cada 8 segundos
   setInterval(function(){
     if(adminView.style.display === "block" && !tabCaja.classList.contains("hidden")){
       refreshOrdersFromStorage();
+    }
+    if(adminView.style.display === "block" && !tabInv.classList.contains("hidden")){
+      loadInventory();
     }
   }, 8000);
 
@@ -371,6 +476,11 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, function(payload) {
       if(adminView.style.display === "block"){
         refreshOrdersFromStorage();
+      }
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'inventory' }, function(payload) {
+      if(adminView.style.display === "block" && !tabInv.classList.contains("hidden")){
+        loadInventory();
       }
     })
     .subscribe();
