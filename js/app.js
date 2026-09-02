@@ -406,8 +406,23 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         '<strong style="color:#fff; font-size:16px;">' + p.id + ' - ' + p.name + '</strong>' +
         '<span style="color:var(--gold); font-family:Fraunces,serif;">' + fmt(parseFloat(p.price)) + '</span>' +
         '</div>' +
-        '<div style="font-size:13px; color:#aaa; margin-bottom:12px;">' + p.category + ' | ' + p.description + '</div>' +
-        '<button class="delete-prod" style="background:transparent; border:1px solid #FF6B6B; color:#FF6B6B; padding:6px 12px; border-radius:6px; font-size:12px;">Eliminar</button>';
+        '<div style="font-size:13px; color:#aaa; margin-bottom:12px;">' + p.category + ' | ' + (p.description || '') + '</div>' +
+        '<div style="display:flex; gap:12px;">' +
+        '<button class="edit-prod" style="background:transparent; border:1px solid #4CAF50; color:#4CAF50; padding:6px 12px; border-radius:6px; font-size:12px;">Editar</button>' +
+        '<button class="delete-prod" style="background:transparent; border:1px solid #FF6B6B; color:#FF6B6B; padding:6px 12px; border-radius:6px; font-size:12px;">Eliminar</button>' +
+        '</div>';
+      
+      div.querySelector(".edit-prod").onclick = function(){
+         document.getElementById("prod-id").value = p.id;
+         document.getElementById("prod-cat").value = p.category;
+         document.getElementById("prod-name").value = p.name;
+         document.getElementById("prod-desc").value = p.description || "";
+         document.getElementById("prod-img").value = p.image_url || "";
+         document.getElementById("prod-price").value = p.price;
+         // Scroll smoothly to the form
+         document.getElementById("form-prod").scrollIntoView({ behavior: "smooth", block: "center" });
+      };
+
       div.querySelector(".delete-prod").onclick = async function(){
          if(confirm("¿Eliminar " + p.name + "?")){
             await supabase.from("products").delete().eq("id", p.id);
