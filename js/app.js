@@ -109,49 +109,6 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }, 6000); // Ritmo más pausado y profesional
   }
 
-  // ---------- PUBLIC MENU INTERACTION ----------
-  window.showPublicMenu = function(catName){
-    document.getElementById("galeria").style.display = "none";
-    var hero = document.querySelector(".hero");
-    if(hero) hero.style.display = "none";
-    var features = document.querySelector(".features");
-    if(features) features.style.display = "none";
-    
-    var pmv = document.getElementById("public-menu-view");
-    pmv.classList.remove("hidden");
-    pmv.style.display = "block";
-    document.getElementById("public-menu-title").textContent = catName;
-    
-    var list = document.getElementById("public-menu-list");
-    list.innerHTML = "";
-    var products = ALL_PRODUCTS.filter(function(p){ return p.cat === catName; });
-    if(products.length === 0){
-        list.innerHTML = "<p>No hay productos en esta categoría.</p>";
-    }
-    products.forEach(function(p){
-       var img = p.image_url || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=400&q=80";
-       var div = document.createElement("div");
-       div.style.cssText = "background:var(--paper); border-radius:16px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.05); display:flex; flex-direction:column;";
-       div.innerHTML = "<div style='height:200px;'><img src='"+img+"' style='width:100%; height:100%; object-fit:cover;'></div>" +
-                       "<div style='padding:20px; flex:1; display:flex; flex-direction:column; justify-content:space-between;'>" +
-                       "<div><h3 style='margin-bottom:8px; font-size:18px; color:var(--brand-dark);'>" + p.nombre + "</h3><p style='color:var(--text-muted); font-size:14px; margin:0;'>" + (p.desc || '') + "</p></div>" +
-                       "<div style='margin-top:16px; font-size:16px; font-weight:600; color:var(--gold);'>S/ " + parseFloat(p.precio).toFixed(2) + "</div>" +
-                       "</div>";
-       list.appendChild(div);
-    });
-    window.scrollTo(0, 0);
-  };
-
-  window.closePublicMenu = function(){
-    document.getElementById("public-menu-view").style.display = "none";
-    document.getElementById("galeria").style.display = "block";
-    var hero = document.querySelector(".hero");
-    if(hero) hero.style.display = "block";
-    var features = document.querySelector(".features");
-    if(features) features.style.display = "block";
-    window.location.hash = "#galeria";
-  };
-
   // ---------- LOGIN / VIEW SWITCH ----------
   var publicView = document.getElementById("public-view");
   var loginView = document.getElementById("login-view");
