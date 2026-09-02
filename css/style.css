@@ -320,3 +320,66 @@ footer.site-footer{background:var(--dark); color:var(--paper); padding:80px 0 40
 .order-card.paid{opacity:.5; border-color:transparent;}
 .paid-tag{font-size:14px; font-weight:600; padding:8px 16px; border-radius:8px; background:rgba(76, 175, 80, 0.1); color:#4CAF50;}
 .empty-state{text-align:center; padding:80px 20px; color:rgba(255,255,255,0.2); font-size:16px; border:2px dashed rgba(255,255,255,0.05); border-radius:16px; font-weight:500;}
+
+/* ================= RESPONSIVE ADMIN ================= */
+@media (max-width: 768px) {
+    .admin-nav {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px;
+        gap: 16px;
+    }
+    .admin-brand {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+    .admin-brand span {
+        font-size: 14px;
+    }
+    .admin-logout {
+        align-self: flex-end;
+    }
+    .admin-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 4px;
+        border-radius: 12px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .admin-tab-btn {
+        flex: 0 0 auto;
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+    .admin-body {
+        padding: 16px;
+    }
+    .caja-summary {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .home-modules-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .mesas-grid-mobile {
+        grid-template-columns: 1fr !important;
+    }
+    .oc-bottom {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .oc-actions {
+        flex-wrap: wrap;
+    }
+    .pay-btn {
+        flex: 1;
+        justify-content: center;
+    }
+}
