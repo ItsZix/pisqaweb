@@ -73,7 +73,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
          groups[p.category].items.push({ id: p.id, nombre: p.name, desc: p.description, precio: parseFloat(p.price), img: p.image_url });
        });
        
-       var catOrder = ["SNACKS", "Postres", "Jugos", "Cofee Drinks", "DULCE - SNACK", "BEBIDAS"];
+       var catOrder = ["SANDWICH", "Postres", "Jugos", "Cofee Drinks", "DULCE - SNACK", "BEBIDAS"];
        MENU = Object.values(groups);
        MENU.sort(function(a, b){
          var ia = catOrder.indexOf(a.cat);
