@@ -173,7 +173,7 @@ svg{display:block;}
 .loc-row .txt a{color:var(--brand-dark); font-weight:600; text-decoration:none; border-bottom:1px solid var(--brand-dark);}
 
 /* ---- footer ---- */
-footer.site-footer{background:var(--black); color:var(--paper); padding:80px 0 40px;}
+footer.site-footer{background:var(--dark); color:var(--paper); padding:80px 0 40px;}
 .foot-top{display:flex; justify-content:space-between; flex-wrap:wrap; gap:60px; padding-bottom:60px; border-bottom:1px solid rgba(255,255,255,0.1);}
 .foot-brand{max-width:340px;}
 .foot-brand .logo-mark{height:60px; margin-bottom:24px; object-fit:contain;}

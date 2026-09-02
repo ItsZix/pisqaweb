@@ -17,6 +17,40 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   var MENU = [];
   var ALL_PRODUCTS = [];
   
+  window.showPublicMenu = function(catName){
+    document.getElementById("gallery-section-main").classList.add("hidden");
+    document.getElementById("public-menu-view").classList.remove("hidden");
+    document.getElementById("public-menu-title").textContent = catName;
+    var list = document.getElementById("public-menu-list");
+    list.innerHTML = "";
+    var prods = ALL_PRODUCTS.filter(p => p.category.toLowerCase() === catName.toLowerCase());
+    if(prods.length === 0){
+       list.innerHTML = "<p>No hay productos en esta categoría por el momento.</p>";
+    } else {
+       prods.forEach(p => {
+          var img = p.image_url ? p.image_url : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80"; // Default food img
+          var div = document.createElement("div");
+          div.style.cssText = "background:var(--paper); border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.05);";
+          div.innerHTML = `
+            <img src="${img}" style="width:100%; height:200px; object-fit:cover;">
+            <div style="padding:24px;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                <h3 style="font-size:20px; color:var(--text-main);">${p.name}</h3>
+                <div style="font-size:18px; color:var(--brand); font-family:Fraunces,serif;">S/ ${parseFloat(p.price).toFixed(2)}</div>
+              </div>
+              <p style="font-size:14px; color:var(--text-muted); margin:0; line-height:1.5;">${p.description || ''}</p>
+            </div>
+          `;
+          list.appendChild(div);
+       });
+    }
+  };
+
+  window.closePublicMenu = function(){
+    document.getElementById("public-menu-view").classList.add("hidden");
+    document.getElementById("gallery-section-main").classList.remove("hidden");
+  };
+
   async function loadMenu(){
     const { data, error } = await supabase.from('products').select('*').order('category').order('id');
     if(!error && data){
@@ -24,7 +58,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
        var groups = {};
        data.forEach(function(p){
          if(!groups[p.category]) groups[p.category] = { cat: p.category, items: [] };
-         groups[p.category].items.push({ id: p.id, nombre: p.name, desc: p.description, precio: parseFloat(p.price) });
+         groups[p.category].items.push({ id: p.id, nombre: p.name, desc: p.description, precio: parseFloat(p.price), img: p.image_url });
        });
        MENU = Object.values(groups);
        if(MENU.length > 0){
@@ -384,6 +418,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         category: document.getElementById("prod-cat").value,
         name: document.getElementById("prod-name").value,
         description: document.getElementById("prod-desc").value,
+        image_url: document.getElementById("prod-img").value || null,
         price: parseFloat(document.getElementById("prod-price").value)
       };
       const { error } = await supabase.from('products').upsert([p]);
