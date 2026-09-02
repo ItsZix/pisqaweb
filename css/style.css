@@ -1,19 +1,28 @@
-:root{
-    --brand:#8B5E34;
-    --brand-dark:#2A1B12;
-    --brand-light:#D4B895;
-    --mint:#F2E8DC;
-    --mint-soft:#FAF6F0;
-    --paper:#FFFFFF;
-    --black:#0A0A0A;
-    --gold:#C18A4F;
-    --text-main:#2A1B12;
-    --text-muted:rgba(42,27,18,0.6);
-    --line: rgba(42,27,18,0.1);
-    --shadow: 0 20px 40px -10px rgba(0,0,0,0.08);
-    --pos-bg: #111111;
-    --pos-card: #1C1C1C;
-    --pos-border: #2A2A2A;
+:root {
+  /* Brand Colors from Palette */
+  --brand: #405d57; /* Turquesa apagado */
+  --brand-light: #a0c6ca; /* Celeste pastel apagado */
+  --brand-green: #97bf96; /* Verde apagado */
+  --brand-beige: #e6ded2; /* Naranja claro */
+  --brand-orange: #dac8b2; /* Naranja pastel apagado */
+  --dark: #15322c; /* Turquesa oscuro */
+  --black: #222920; /* Verde Oscuro apagado */
+  --gray: #9b928a; /* Naranja apagado */
+  
+  --brand-dark: #15322c; /* For old variable compat */
+  --mint: #e6ded2; /* Used for backgrounds, mapped to brand-beige */
+  --mint-soft: #fcfcfc; /* White/Base for background */
+  --paper: #ffffff;
+  --text-main: #222920; /* Black */
+  --text-muted: rgba(34, 41, 32, 0.6);
+  --line: rgba(34, 41, 32, 0.1);
+  --shadow: 0 20px 40px -10px rgba(0,0,0,0.08);
+  
+  /* POS System Variables (Adapted to brand darks) */
+  --pos-bg: #222920; 
+  --pos-card: #15322c;
+  --pos-border: rgba(255,255,255,0.08);
+  --gold: #dac8b2; /* Reemplaza el dorado antiguo por el Naranja Pastel */
 }
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
