@@ -82,34 +82,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     return '<svg '+(extra||'')+' viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:24px; height:24px; stroke:var(--brand);"><use href="#'+id+'"/></svg>';
   }
 
-  // ---------- PUBLIC MENU ----------
-  var activeCat = MENU[0].cat;
-  var tabsEl = document.getElementById("menu-tabs");
-  var gridEl = document.getElementById("menu-grid");
-
-  function renderPublicMenu(){
-    tabsEl.innerHTML = "";
-    MENU.forEach(function(g){
-      var b = document.createElement("button");
-      b.className = "tab-btn" + (g.cat === activeCat ? " active" : "");
-      b.innerHTML = '<svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#'+CAT_ICONS[g.cat]+'"/></svg>' + g.cat;
-      b.onclick = function(){ activeCat = g.cat; renderPublicMenu(); };
-      tabsEl.appendChild(b);
-    });
-    var group = MENU.find(function(g){ return g.cat === activeCat; });
-    gridEl.innerHTML = "";
-    group.items.forEach(function(it){
-      var div = document.createElement("div");
-      div.className = "menu-item";
-      // AQUI quitamos el precio en la vista publica y ponemos un icono que represente la categoria
-      div.innerHTML =
-        '<div class="mi-left"><div class="mi-name">'+it.nombre+'</div>' +
-        (it.desc ? '<div class="mi-desc">'+it.desc+'</div>' : '') + '</div>' +
-        '<div class="mi-price" style="display:flex; align-items:center; justify-content:center;">' + iconSvg(CAT_ICONS[group.cat]) + '</div>';
-      gridEl.appendChild(div);
-    });
-  }
-  renderPublicMenu();
+  // ---------- PUBLIC MENU REMOVED ----------
 
   // ---------- LOGIN / VIEW SWITCH ----------
   var publicView = document.getElementById("public-view");
@@ -224,7 +197,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   function renderCart(){
     var ids = Object.keys(cart);
     if(ids.length === 0){
-      cartLinesEl.innerHTML = '<div class="cart-empty">Aún no agregas productos.</div>';
+      cartLinesEl.innerHTML = '<div class="cart-empty"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:32px;height:32px;margin:0 auto 10px;opacity:0.5;"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Agrega productos para la mesa.</div>';
       sendBtn.disabled = true;
       cartTotalEl.textContent = fmt(0);
       return;
