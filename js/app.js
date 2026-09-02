@@ -72,7 +72,17 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
          if(!groups[p.category]) groups[p.category] = { cat: p.category, items: [] };
          groups[p.category].items.push({ id: p.id, nombre: p.name, desc: p.description, precio: parseFloat(p.price), img: p.image_url });
        });
+       
+       var catOrder = ["SNACKS", "Postres", "Jugos", "Cofee Drinks", "DULCE - SNACK", "BEBIDAS"];
        MENU = Object.values(groups);
+       MENU.sort(function(a, b){
+         var ia = catOrder.indexOf(a.cat);
+         var ib = catOrder.indexOf(b.cat);
+         if(ia === -1) ia = 99;
+         if(ib === -1) ib = 99;
+         return ia - ib;
+       });
+       
        if(MENU.length > 0){
           activeAdminCat = MENU[0].cat;
           renderAdminMenu();
@@ -114,50 +124,64 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       hideLogin();
       publicView.classList.add("hidden");
       adminView.style.display = "block";
+      
+      document.getElementById("tab-home").classList.remove("hidden");
+      document.getElementById("tab-pedido").classList.add("hidden");
+      document.getElementById("tab-caja").classList.add("hidden");
+      document.getElementById("tab-inventario").classList.add("hidden");
+      document.getElementById("tab-menu").classList.add("hidden");
+      document.querySelectorAll(".admin-tab-btn").forEach(function(b){ b.classList.remove("active"); });
+      
       refreshOrdersFromStorage();
     } else {
       loginError.textContent = "Contraseña incorrecta.";
     }
   }
+
+  // Wire up home buttons
+  document.querySelectorAll(".home-module-btn").forEach(function(btn){
+    btn.onclick = function(){
+      var target = btn.getAttribute("data-target");
+      document.querySelector('[data-admin-tab="' + target + '"]').click();
+    };
+  });
+
   document.getElementById("login-submit").onclick = attemptLogin;
-  pwInput.addEventListener("keydown", function(e){ if(e.key === "Enter") attemptLogin(); });
+  pwInput.onkeyup = function(e){ if(e.key === "Enter") attemptLogin(); };
 
   document.getElementById("logout-btn").onclick = function(){
     adminView.style.display = "none";
     publicView.classList.remove("hidden");
-    window.scrollTo(0,0);
   };
 
-  var adminTabBtns = document.querySelectorAll(".admin-tab-btn");
   var tabPedido = document.getElementById("tab-pedido");
   var tabCaja = document.getElementById("tab-caja");
   var tabInv = document.getElementById("tab-inventario");
   var tabMenu = document.getElementById("tab-menu");
-  
-  adminTabBtns.forEach(function(btn){
+  var tabHome = document.getElementById("tab-home");
+
+  document.querySelectorAll(".admin-tab-btn").forEach(function(btn){
     btn.onclick = function(){
-      adminTabBtns.forEach(function(b){ b.classList.remove("active"); });
+      document.querySelectorAll(".admin-tab-btn").forEach(function(b){ b.classList.remove("active"); });
       btn.classList.add("active");
-      var which = btn.getAttribute("data-admin-tab");
-      tabPedido.classList.add("hidden");
-      tabCaja.classList.add("hidden");
-      tabInv.classList.add("hidden");
-      tabMenu.classList.add("hidden");
-      if(which === "pedido"){
-        tabPedido.classList.remove("hidden");
-      } else if (which === "caja"){
-        tabCaja.classList.remove("hidden");
-        refreshOrdersFromStorage();
-      } else if (which === "inventario"){
-        tabInv.classList.remove("hidden");
-        loadInventory();
-      } else if (which === "menu"){
-        tabMenu.classList.remove("hidden");
-      }
+      var t = btn.getAttribute("data-admin-tab");
+      
+      if(tabHome) tabHome.classList.add("hidden");
+      if(tabPedido) tabPedido.classList.add("hidden");
+      if(tabCaja) tabCaja.classList.add("hidden");
+      if(tabInv) tabInv.classList.add("hidden");
+      if(tabMenu) tabMenu.classList.add("hidden");
+      
+      var targetTab = document.getElementById("tab-" + t);
+      if(targetTab) targetTab.classList.remove("hidden");
+      
+      if(t === "pedido") updateMesaUI();
+      if(t === "caja") refreshOrdersFromStorage();
+      if(t === "inventario") loadInventory();
     };
   });
 
-  // ---------- NUEVO PEDIDO ----------
+  // ---------- NUEVO PEDIDO --------------
   var mesa = 1;
   var editingOrderId = null;
   var mesaNumEl = document.getElementById("mesa-num");
