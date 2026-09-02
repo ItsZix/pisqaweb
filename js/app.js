@@ -18,7 +18,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   var ALL_PRODUCTS = [];
   
   window.showPublicMenu = function(catName){
-    document.getElementById("gallery-section-main").classList.add("hidden");
+    document.getElementById("galeria").classList.add("hidden");
     document.getElementById("public-menu-view").classList.remove("hidden");
     document.getElementById("public-menu-title").textContent = catName;
     var list = document.getElementById("public-menu-list");
@@ -48,7 +48,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   window.closePublicMenu = function(){
     document.getElementById("public-menu-view").classList.add("hidden");
-    document.getElementById("gallery-section-main").classList.remove("hidden");
+    document.getElementById("galeria").classList.remove("hidden");
   };
 
   async function loadMenu(){
@@ -62,6 +62,17 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
            console.warn("La tabla de productos está vacía.");
        }
        ALL_PRODUCTS = data;
+       
+       // Pre-cargar imágenes silenciosamente en segundo plano
+       setTimeout(function(){
+           ALL_PRODUCTS.forEach(function(p){
+               if(p.image_url) {
+                   var img = new Image();
+                   img.src = p.image_url;
+               }
+           });
+       }, 500); // Pequeño retraso para no bloquear la página inicial
+
        ALL_PRODUCTS.sort(function(a, b){
          var numA = parseInt(a.id.replace(/[^0-9]/g, ''), 10) || 0;
          var numB = parseInt(b.id.replace(/[^0-9]/g, ''), 10) || 0;
