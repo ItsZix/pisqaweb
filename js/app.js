@@ -32,7 +32,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
           var div = document.createElement("div");
           div.style.cssText = "background:var(--paper); border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.05);";
           div.innerHTML = `
-            <img src="${img}" style="width:100%; height:200px; object-fit:cover;">
+            <img src="${img}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80';" style="width:100%; height:200px; object-fit:cover;">
             <div style="padding:24px;">
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
                 <h3 style="font-size:20px; color:var(--text-main);">${p.name}</h3>
