@@ -476,7 +476,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       setTimeout(function(){ 
           document.getElementById("order-confirm").textContent = ""; 
           showPedidoFlowStart();
-      }, 3000);
+      }, 1500);
       refreshOrdersFromStorage();
     } else {
       document.getElementById("order-confirm").textContent = "No se pudo enviar el pedido. Intenta de nuevo.";
