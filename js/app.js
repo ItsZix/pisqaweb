@@ -432,6 +432,8 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     editingOrderId = null;
     var cnInput = document.getElementById("customer-name-input");
     if(cnInput) cnInput.value = "";
+    var cdInput = document.getElementById("custom-date-input");
+    if(cdInput) cdInput.value = "";
     renderCart();
     document.getElementById("order-confirm").textContent = "";
     showPedidoFlowStart();
@@ -479,6 +481,14 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       customer_name: customerName,
       staff_name: staffName
     };
+    
+    var customDateInput = document.getElementById("custom-date-input");
+    if(customDateInput && customDateInput.value) {
+       // Convertir la fecha local seleccionada al formato ISO (que supabase lee como UTC pero asume local si no tiene Z, o podemos usar toISOString si queremos UTC)
+       // Mejor pasamos un objeto Date
+       var customDate = new Date(customDateInput.value);
+       order.created_at = customDate.toISOString();
+    }
     
     var originalItems = [];
     var error;
@@ -528,7 +538,10 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       document.getElementById("order-confirm").textContent = editingOrderId ? "Pedido actualizado" : ("Pedido enviado a cocina · Mesa " + mesa);
       cart = {};
       editingOrderId = null;
+      var cnInput = document.getElementById("customer-name-input");
       if(cnInput) cnInput.value = "";
+      var cdInput = document.getElementById("custom-date-input");
+      if(cdInput) cdInput.value = "";
       renderCart();
       sendBtn.disabled = true;
       setTimeout(function(){ 
