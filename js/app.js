@@ -648,13 +648,22 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       var endTs = endVal ? new Date(endVal + "T23:59:59").getTime() : Infinity;
 
       loadOrders().then(function(orders){
+        // Ordenar todos los pedidos desde el más antiguo al más nuevo para asignarles el número correlativo VEN-
+        orders.sort(function(a,b){ return a.creado - b.creado; });
+        var BASE_ORDER_NUM = 100; // Aquí empieza el contador histórico (VEN-100)
+        
+        // Mapear cada pedido con su número de venta histórico
+        orders.forEach(function(o, index){
+           o.historicalId = "VEN-" + (BASE_ORDER_NUM + index);
+        });
+
         var filtered = orders.filter(function(o){
            return o.creado >= startTs && o.creado <= endTs;
         });
         
         if(filtered.length === 0){ alert("No hay pedidos en ese rango de fechas."); return; }
         
-        // Formato exacto del Excel antiguo usando punto y coma (;) para que Excel lo separe en columnas
+        // Formato exacto del Excel antiguo usando punto y coma (;)
         var csvContent = "\uFEFF"; 
         csvContent += "ID Venta;Nª Mesa/ Nombre;Fecha;Descripción Producto / Insumo;Codig. Product;Categoría;Precio Venta;Cantidad Vendida / Consumida;Total Venta;Total Mesa;Metod. Pago;Encargado\n";
         
@@ -666,13 +675,18 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             o.items.forEach(function(item){
               var totalItem = item.precio * item.cantidad;
               var safeDesc = '"' + item.nombre.replace(/"/g, '""') + '"';
+              
+              // Buscar la categoría del producto en la lista general de menú
+              var prodMatch = ALL_PRODUCTS.find(function(p){ return p.id === item.id; });
+              var cat = prodMatch ? prodMatch.category : "";
+              
               var row = [
-                o.id,
+                o.historicalId,
                 "MESA " + o.mesa,
                 fechaStr,
                 safeDesc,
                 item.id,
-                "", // Categoría vacía por ahora
+                cat,
                 item.precio.toFixed(2),
                 item.cantidad,
                 totalItem.toFixed(2),
