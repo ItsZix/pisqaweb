@@ -420,7 +420,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         estado: o.status,
         metodoPago: o.payment_method,
         creado: new Date(o.created_at).getTime(),
-        pagadoEn: o.payment_method ? new Date().getTime() : null
+        pagadoEn: o.payment_method ? new Date(o.created_at).getTime() : null
       };
     });
   }
@@ -519,21 +519,34 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   var sumPagados = document.getElementById("sum-pagados");
   var lastPendingCount = 0;
 
-  function isToday(ts){
-    var d = new Date(ts), now = new Date();
-    return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth() && d.getDate()===now.getDate();
+  var cajaDateFilter = document.getElementById("caja-date-filter");
+  if(cajaDateFilter) {
+    var todayStr = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD local
+    cajaDateFilter.value = todayStr;
+    cajaDateFilter.onchange = function(){ refreshOrdersFromStorage(); };
   }
+
+  function isSameDay(ts, dateStr){
+    // ts es timestamp (ms), dateStr es "YYYY-MM-DD"
+    var d = new Date(ts);
+    var localStr = d.toLocaleDateString('en-CA');
+    return localStr === dateStr;
+  }
+  
   function timeLabel(ts){ return new Date(ts).toLocaleTimeString('es-PE', {hour:'2-digit', minute:'2-digit'}); }
 
   function renderOrders(orders){
     var pending = orders.filter(function(o){ return o.estado === "pendiente"; }).sort(function(a,b){ return a.creado - b.creado; });
-    var paidToday = orders.filter(function(o){ return o.estado === "pagado" && isToday(o.pagadoEn); }).sort(function(a,b){ return b.pagadoEn - a.pagadoEn; });
+    
+    var selectedDate = cajaDateFilter ? cajaDateFilter.value : new Date().toLocaleDateString('en-CA');
+    
+    var paidFiltered = orders.filter(function(o){ return o.estado === "pagado" && isSameDay(o.pagadoEn, selectedDate); }).sort(function(a,b){ return b.pagadoEn - a.pagadoEn; });
 
     lastPendingCount = pending.length;
 
     sumPendientes.textContent = pending.length;
-    sumPagados.textContent = paidToday.length;
-    sumCobrado.textContent = fmt(paidToday.reduce(function(s,o){ return s + o.total; }, 0));
+    sumPagados.textContent = paidFiltered.length;
+    sumCobrado.textContent = fmt(paidFiltered.reduce(function(s,o){ return s + o.total; }, 0));
 
     pendingListEl.innerHTML = "";
     if(pending.length === 0){
@@ -543,10 +556,10 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
 
     paidListEl.innerHTML = "";
-    if(paidToday.length === 0){
-      paidListEl.innerHTML = '<div class="empty-state">Todavía no hay cobros registrados hoy.</div>';
+    if(paidFiltered.length === 0){
+      paidListEl.innerHTML = '<div class="empty-state">No hay cobros registrados en la fecha seleccionada.</div>';
     } else {
-      paidToday.forEach(function(o){ paidListEl.appendChild(buildOrderCard(o, true)); });
+      paidFiltered.forEach(function(o){ paidListEl.appendChild(buildOrderCard(o, true)); });
     }
   }
 

@@ -459,8 +459,9 @@
           </div>
 
           <div class="board-column">
-            <div class="caja-col-head">
-              Historial (Pagados Hoy)
+            <div class="caja-col-head" style="display:flex; justify-content:space-between; align-items:center;">
+              <span id="historial-title">Historial Pagados</span>
+              <input type="date" id="caja-date-filter" style="background:transparent; color:#fff; border:1px solid #555; border-radius:4px; padding:2px 4px; font-size:12px; cursor:pointer;">
             </div>
             <div class="order-list" id="paid-list"></div>
           </div>
