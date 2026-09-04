@@ -665,11 +665,12 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // Formato exacto del Excel antiguo usando punto y coma (;)
         var csvContent = "\uFEFF"; 
-        csvContent += "ID Venta;Nª Mesa/ Nombre;Fecha;Descripción Producto / Insumo;Codig. Product;Categoría;Precio Venta;Cantidad Vendida / Consumida;Total Venta;Total Mesa;Metod. Pago;Encargado\n";
+        csvContent += "ID Venta;Nª Mesa/ Nombre;Fecha;Hora;Descripción Producto / Insumo;Codig. Product;Categoría;Precio Venta;Cantidad Vendida / Consumida;Total Venta;Total Mesa;Metod. Pago;Encargado\n";
         
         filtered.forEach(function(o){
           var d = new Date(o.creado);
           var fechaStr = d.toLocaleDateString('es-PE');
+          var horaStr = d.toLocaleTimeString('es-PE', {hour: '2-digit', minute:'2-digit', hour12:true});
           
           if(o.items && o.items.length > 0) {
             o.items.forEach(function(item){
@@ -680,12 +681,17 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
               var prodMatch = ALL_PRODUCTS.find(function(p){ return p.id === item.id; });
               var cat = prodMatch ? prodMatch.category : "";
               
+              // Formatear el ID del producto (ej: PRDC. 018)
+              var numId = item.id.replace(/\D/g, '').padStart(3, '0');
+              var codProd = "PRDC. " + numId;
+              
               var row = [
                 o.historicalId,
                 "MESA " + o.mesa,
                 fechaStr,
+                horaStr,
                 safeDesc,
-                item.id,
+                codProd,
                 cat,
                 item.precio.toFixed(2),
                 item.cantidad,
