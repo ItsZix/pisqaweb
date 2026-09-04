@@ -234,8 +234,37 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   function showPedidoFlowPOS(){
     document.getElementById("pedido-flow-start").style.display = "none";
     document.getElementById("pedido-flow-mesas").style.display = "none";
+    document.getElementById("pedido-flow-staff").style.display = "none";
     document.getElementById("pedido-flow-lista").style.display = "none";
     document.getElementById("pedido-flow-pos").style.display = "block";
+  }
+  
+  function showPedidoFlowStaff(){
+    document.getElementById("pedido-flow-start").style.display = "none";
+    document.getElementById("pedido-flow-mesas").style.display = "none";
+    document.getElementById("pedido-flow-lista").style.display = "none";
+    document.getElementById("pedido-flow-pos").style.display = "none";
+    
+    var staffFlow = document.getElementById("pedido-flow-staff");
+    if(staffFlow) {
+      staffFlow.style.display = "flex";
+      var grid = document.getElementById("staff-grid");
+      grid.innerHTML = "";
+      staffList.forEach(function(s){
+         var btn = document.createElement("button");
+         btn.style.cssText = "background:var(--pos-card); border:1px solid var(--pos-border); padding:24px; border-radius:12px; color:#fff; font-size:18px; cursor:pointer;";
+         btn.textContent = s;
+         btn.onclick = function(){
+            var staffSelect = document.getElementById("staff-select");
+            if(staffSelect) staffSelect.value = s;
+            showPedidoFlowPOS();
+         };
+         grid.appendChild(btn);
+      });
+    } else {
+      // Fallback
+      showPedidoFlowPOS();
+    }
   }
 
   var btnNuevo = document.getElementById("btn-flow-nuevo");
@@ -246,6 +275,8 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   if(btnBack1) btnBack1.onclick = function(){ showPedidoFlowStart(); };
   var btnBack2 = document.getElementById("btn-flow-back-2");
   if(btnBack2) btnBack2.onclick = function(){ showPedidoFlowStart(); };
+  var btnBackStaff = document.getElementById("btn-flow-back-staff");
+  if(btnBackStaff) btnBackStaff.onclick = function(){ showPedidoFlowMesas(); };
   
   document.querySelectorAll(".mesa-btn").forEach(function(btn){
      btn.onclick = function(){
@@ -256,7 +287,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
          var cnInput = document.getElementById("customer-name-input");
          if (cnInput) cnInput.value = "";
          renderCart();
-         showPedidoFlowPOS();
+         showPedidoFlowStaff(); // Ir a seleccion de personal en vez del POS directo
      };
   });
 
