@@ -421,8 +421,14 @@
       <div id="tab-caja" class="hidden">
         
         <div class="dashboard-header">
-          <h2>Panel de Control en Vivo</h2>
-          <div class="refresh-note">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+            <h2>Panel de Control en Vivo</h2>
+            <button id="export-excel-btn" style="background:var(--brand); color:var(--paper); border:none; padding:8px 16px; border-radius:8px; font-size:14px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Exportar Ventas a Excel
+            </button>
+          </div>
+          <div class="refresh-note" style="margin-top:8px;">
             <span class="pulse-dot"></span> Sincronizado en tiempo real con Supabase · 
             <a href="#" id="manual-refresh">Forzar sincronización</a>
           </div>

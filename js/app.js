@@ -626,6 +626,53 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   function refreshOrdersFromStorage(){ loadOrders().then(renderOrders); }
   document.getElementById("manual-refresh").onclick = function(e){ e.preventDefault(); refreshOrdersFromStorage(); };
 
+  var exportBtn = document.getElementById("export-excel-btn");
+  if(exportBtn){
+    exportBtn.onclick = function(){
+      loadOrders().then(function(orders){
+        if(orders.length === 0){ alert("No hay pedidos para exportar."); return; }
+        
+        // Agregar BOM para que Excel lea las tildes y ñ correctamente
+        var csvContent = "\uFEFF"; 
+        csvContent += "Fecha,Hora,ID Pedido,Mesa,Cliente,Encargado,Total,Estado,Metodo Pago,Productos\n";
+        
+        orders.forEach(function(o){
+          var d = new Date(o.creado);
+          var fecha = d.toLocaleDateString('es-PE');
+          var hora = d.toLocaleTimeString('es-PE');
+          var productosStr = o.items.map(function(i){ return i.cantidad + "x " + i.nombre; }).join(" + ");
+          // Escapar comillas dobles y comas en los textos libres
+          var safeClient = o.customer_name ? '"' + o.customer_name.replace(/"/g, '""') + '"' : "";
+          var safeProds = '"' + productosStr.replace(/"/g, '""') + '"';
+          
+          var row = [
+            fecha,
+            hora,
+            o.id,
+            "Mesa " + o.mesa,
+            safeClient,
+            o.staff_name || "",
+            o.total,
+            o.estado,
+            o.metodoPago || "",
+            safeProds
+          ].join(",");
+          csvContent += row + "\n";
+        });
+        
+        var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        link.setAttribute("href", url);
+        var hoy = new Date().toISOString().slice(0,10);
+        link.setAttribute("download", "PISQA_Ventas_" + hoy + ".csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    };
+  }
+
   // ---------- GESTIÓN DE MENÚ ----------
   function renderProductList(){
     var list = document.getElementById("product-list");
