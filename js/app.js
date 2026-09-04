@@ -665,7 +665,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // Formato exacto del Excel antiguo usando punto y coma (;)
         var csvContent = "\uFEFF"; 
-        csvContent += "ID Venta;Nª Mesa/ Nombre;Fecha;Hora;Descripción Producto / Insumo;Codig. Product;Categoría;Precio Venta;Cantidad Vendida / Consumida;Total Venta;Total Mesa;Metod. Pago;Encargado\n";
+        csvContent += "ID Venta;Nª Mesa/ Nombre;Cliente;Fecha;Hora;Descripción Producto / Insumo;Codig. Product;Categoría;Precio Venta;Cantidad Vendida / Consumida;Total Venta;Total Mesa;Metod. Pago;Encargado\n";
         
         filtered.forEach(function(o){
           var d = new Date(o.creado);
@@ -677,6 +677,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             o.items.forEach(function(item, idx){
               var totalItem = item.precio * item.cantidad;
               var safeDesc = '"' + item.nombre.replace(/"/g, '""') + '"';
+              var safeClient = o.customer_name ? '"' + o.customer_name.replace(/"/g, '""') + '"' : "";
               
               var prodMatch = ALL_PRODUCTS.find(function(p){ return p.id === item.id; });
               var cat = prodMatch ? prodMatch.category : "";
@@ -690,6 +691,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
               var row = [
                 isFirst ? o.historicalId : "",
                 isFirst ? "MESA " + o.mesa : "",
+                isFirst ? safeClient : "",
                 fechaStr,
                 horaStr,
                 safeDesc,
