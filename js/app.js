@@ -670,24 +670,26 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         filtered.forEach(function(o){
           var d = new Date(o.creado);
           var fechaStr = d.toLocaleDateString('es-PE');
-          var horaStr = d.toLocaleTimeString('es-PE', {hour: '2-digit', minute:'2-digit', hour12:true});
+          // Hora con segundos incluidos
+          var horaStr = d.toLocaleTimeString('es-PE', {hour: '2-digit', minute:'2-digit', second:'2-digit', hour12:true});
           
           if(o.items && o.items.length > 0) {
-            o.items.forEach(function(item){
+            o.items.forEach(function(item, idx){
               var totalItem = item.precio * item.cantidad;
               var safeDesc = '"' + item.nombre.replace(/"/g, '""') + '"';
               
-              // Buscar la categoría del producto en la lista general de menú
               var prodMatch = ALL_PRODUCTS.find(function(p){ return p.id === item.id; });
               var cat = prodMatch ? prodMatch.category : "";
               
-              // Formatear el ID del producto (ej: PRDC. 018)
               var numId = item.id.replace(/\D/g, '').padStart(3, '0');
               var codProd = "PRDC. " + numId;
               
+              // Para simular el estilo "agrupado" de Excel, solo mostramos estos datos en la primera fila del pedido
+              var isFirst = (idx === 0);
+              
               var row = [
-                o.historicalId,
-                "MESA " + o.mesa,
+                isFirst ? o.historicalId : "",
+                isFirst ? "MESA " + o.mesa : "",
                 fechaStr,
                 horaStr,
                 safeDesc,
@@ -696,9 +698,9 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 item.precio.toFixed(2),
                 item.cantidad,
                 totalItem.toFixed(2),
-                o.total.toFixed(2),
-                o.metodoPago || "",
-                o.staff_name || ""
+                isFirst ? o.total.toFixed(2) : "",
+                isFirst ? (o.metodoPago || "") : "",
+                isFirst ? (o.staff_name || "") : ""
               ].join(";");
               csvContent += row + "\n";
             });
