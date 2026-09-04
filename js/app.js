@@ -554,9 +554,15 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     var div = document.createElement("div");
     div.className = "order-card" + (paid ? " paid" : "");
     var itemsHtml = o.items.map(function(i){ return i.cantidad+'× '+i.nombre; }).join(" · ");
+    
     var nameHtml = "";
-    if (o.customer_name) nameHtml += '<div class="oc-name" style="font-weight:bold; color:#fff;">Cliente: '+o.customer_name+'</div>';
-    if (o.staff_name) nameHtml += '<div style="font-size:12px; color:#aaa; margin-bottom:8px;">Atendido por: '+o.staff_name+'</div>';
+    if (paid) {
+      if (o.customer_name) nameHtml += '<div class="oc-name" style="font-weight:bold; color:#fff;">Cliente: '+o.customer_name+'</div>';
+      if (o.staff_name) nameHtml += '<div style="font-size:12px; color:#aaa; margin-bottom:8px;">Atendido por: '+o.staff_name+'</div>';
+    } else {
+      nameHtml += '<input type="text" class="oc-customer-input" placeholder="Nombre del cliente (opcional)..." value="'+(o.customer_name || '')+'" style="width:100%; box-sizing:border-box; padding:6px 10px; margin-bottom:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.3); color:#fff; font-size:13px;" />';
+      if (o.staff_name) nameHtml += '<div style="font-size:12px; color:#aaa; margin-bottom:8px;">Atendido por: '+o.staff_name+'</div>';
+    }
     
     div.innerHTML =
       '<div class="oc-top"><div class="oc-mesa">Mesa '+o.mesa+'</div><div class="oc-time">'+timeLabel(o.creado)+'</div></div>' +
@@ -571,6 +577,8 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       tag.textContent = "Pagado · " + o.metodoPago + " · " + timeLabel(o.pagadoEn);
       actions.appendChild(tag);
     } else {
+      var clientInput = div.querySelector(".oc-customer-input");
+      
       var editBtn = document.createElement("button");
       editBtn.className = "edit-order-btn"; editBtn.textContent = "Editar";
       editBtn.style.cssText = "background:transparent; border:1px solid #FF9800; color:#FF9800; padding:4px 8px; border-radius:6px; margin-right:8px; cursor:pointer;";
@@ -582,7 +590,8 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
          var mesaNumEl = document.getElementById("mesa-num");
          if (mesaNumEl) mesaNumEl.textContent = mesa;
          var cnInput = document.getElementById("customer-name-input");
-         if (cnInput) cnInput.value = o.customer_name || "";
+         // Si escribieron algo nuevo en la tarjeta antes de darle a editar, lo llevamos
+         if (cnInput) cnInput.value = clientInput.value.trim();
          cart = {};
          o.items.forEach(function(i){
              cart[i.id] = { item: {id: i.id, nombre: i.nombre, precio: i.precio}, cantidad: i.cantidad };
@@ -592,16 +601,20 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       
       var yapeBtn = document.createElement("button");
       yapeBtn.className = "pay-btn yape"; yapeBtn.textContent = "Yape";
-      yapeBtn.onclick = function(){ markPaid(o.id, "Yape"); };
+      yapeBtn.onclick = function(){ markPaid(o.id, "Yape", clientInput.value.trim()); };
+      
       var efvBtn = document.createElement("button");
       efvBtn.className = "pay-btn efectivo"; efvBtn.textContent = "Efectivo";
-      efvBtn.onclick = function(){ markPaid(o.id, "Efectivo"); };
+      efvBtn.onclick = function(){ markPaid(o.id, "Efectivo", clientInput.value.trim()); };
+      
       var cardBtn = document.createElement("button");
       cardBtn.className = "pay-btn efectivo"; cardBtn.style.background = "#2196F3"; cardBtn.textContent = "Tarjeta";
-      cardBtn.onclick = function(){ markPaid(o.id, "Tarjeta"); };
+      cardBtn.onclick = function(){ markPaid(o.id, "Tarjeta", clientInput.value.trim()); };
+      
       var cancelBtn = document.createElement("button");
       cancelBtn.className = "cancel-btn"; cancelBtn.textContent = "Cancelar";
       cancelBtn.onclick = function(){ cancelOrder(o.id); };
+      
       actions.appendChild(yapeBtn);
       actions.appendChild(efvBtn);
       actions.appendChild(cardBtn);
@@ -610,10 +623,11 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     return div;
   }
 
-  async function markPaid(id, metodo){
+  async function markPaid(id, metodo, finalCustomerName){
     const { error } = await supabase.from('orders').update({ 
       status: 'pagado', 
-      payment_method: metodo
+      payment_method: metodo,
+      customer_name: finalCustomerName
     }).eq('id', id);
     if(!error) refreshOrdersFromStorage();
   }
