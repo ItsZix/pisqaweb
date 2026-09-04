@@ -654,9 +654,9 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         if(filtered.length === 0){ alert("No hay pedidos en ese rango de fechas."); return; }
         
-        // Formato exacto del Excel antiguo
+        // Formato exacto del Excel antiguo usando punto y coma (;) para que Excel lo separe en columnas
         var csvContent = "\uFEFF"; 
-        csvContent += "ID Venta,Nª Mesa/ Nombre,Fecha,Descripción Producto / Insumo,Codig. Product,Categoría,Precio Venta,Cantidad Vendida / Consumida,Total Venta,Total Mesa,Metod. Pago,Encargado\n";
+        csvContent += "ID Venta;Nª Mesa/ Nombre;Fecha;Descripción Producto / Insumo;Codig. Product;Categoría;Precio Venta;Cantidad Vendida / Consumida;Total Venta;Total Mesa;Metod. Pago;Encargado\n";
         
         filtered.forEach(function(o){
           var d = new Date(o.creado);
@@ -679,7 +679,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 o.total.toFixed(2),
                 o.metodoPago || "",
                 o.staff_name || ""
-              ].join(",");
+              ].join(";");
               csvContent += row + "\n";
             });
           }
