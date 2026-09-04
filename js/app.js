@@ -627,37 +627,62 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   document.getElementById("manual-refresh").onclick = function(e){ e.preventDefault(); refreshOrdersFromStorage(); };
 
   var exportBtn = document.getElementById("export-excel-btn");
-  if(exportBtn){
+  var exportModal = document.getElementById("export-modal");
+  var exportCancel = document.getElementById("export-cancel-btn");
+  var exportConfirm = document.getElementById("export-confirm-btn");
+  
+  if(exportBtn && exportModal){
     exportBtn.onclick = function(){
+      exportModal.classList.remove("hidden");
+    };
+    exportCancel.onclick = function(){
+      exportModal.classList.add("hidden");
+    };
+    
+    exportConfirm.onclick = function(){
+      exportModal.classList.add("hidden");
+      var startVal = document.getElementById("export-start").value;
+      var endVal = document.getElementById("export-end").value;
+      
+      var startTs = startVal ? new Date(startVal + "T00:00:00").getTime() : 0;
+      var endTs = endVal ? new Date(endVal + "T23:59:59").getTime() : Infinity;
+
       loadOrders().then(function(orders){
-        if(orders.length === 0){ alert("No hay pedidos para exportar."); return; }
+        var filtered = orders.filter(function(o){
+           return o.creado >= startTs && o.creado <= endTs;
+        });
         
-        // Agregar BOM para que Excel lea las tildes y ñ correctamente
+        if(filtered.length === 0){ alert("No hay pedidos en ese rango de fechas."); return; }
+        
+        // Formato exacto del Excel antiguo
         var csvContent = "\uFEFF"; 
-        csvContent += "Fecha,Hora,ID Pedido,Mesa,Cliente,Encargado,Total,Estado,Metodo Pago,Productos\n";
+        csvContent += "ID Venta,Nª Mesa/ Nombre,Fecha,Descripción Producto / Insumo,Codig. Product,Categoría,Precio Venta,Cantidad Vendida / Consumida,Total Venta,Total Mesa,Metod. Pago,Encargado\n";
         
-        orders.forEach(function(o){
+        filtered.forEach(function(o){
           var d = new Date(o.creado);
-          var fecha = d.toLocaleDateString('es-PE');
-          var hora = d.toLocaleTimeString('es-PE');
-          var productosStr = o.items.map(function(i){ return i.cantidad + "x " + i.nombre; }).join(" + ");
-          // Escapar comillas dobles y comas en los textos libres
-          var safeClient = o.customer_name ? '"' + o.customer_name.replace(/"/g, '""') + '"' : "";
-          var safeProds = '"' + productosStr.replace(/"/g, '""') + '"';
+          var fechaStr = d.toLocaleDateString('es-PE');
           
-          var row = [
-            fecha,
-            hora,
-            o.id,
-            "Mesa " + o.mesa,
-            safeClient,
-            o.staff_name || "",
-            o.total,
-            o.estado,
-            o.metodoPago || "",
-            safeProds
-          ].join(",");
-          csvContent += row + "\n";
+          if(o.items && o.items.length > 0) {
+            o.items.forEach(function(item){
+              var totalItem = item.precio * item.cantidad;
+              var safeDesc = '"' + item.nombre.replace(/"/g, '""') + '"';
+              var row = [
+                o.id,
+                "MESA " + o.mesa,
+                fechaStr,
+                safeDesc,
+                item.id,
+                "", // Categoría vacía por ahora
+                item.precio.toFixed(2),
+                item.cantidad,
+                totalItem.toFixed(2),
+                o.total.toFixed(2),
+                o.metodoPago || "",
+                o.staff_name || ""
+              ].join(",");
+              csvContent += row + "\n";
+            });
+          }
         });
         
         var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });

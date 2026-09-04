@@ -550,6 +550,30 @@
   </div>
 </div>
 
-<script type="module" src="js/app.js"></script>
+  <!-- EXPORT MODAL -->
+  <div id="export-modal" class="hidden" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:9999; display:flex; justify-content:center; align-items:center;">
+    <div style="background:var(--paper); padding:32px; border-radius:16px; width:90%; max-width:400px; box-shadow:0 10px 40px rgba(0,0,0,0.5);">
+      <h3 style="margin-top:0; color:var(--text-main); font-family:Fraunces,serif; font-size:24px;">Exportar a Excel</h3>
+      <p style="color:var(--text-muted); font-size:14px; margin-bottom:24px;">Selecciona el rango de fechas que deseas descargar. (Deja vacío para descargar todo el historial).</p>
+      
+      <div style="display:flex; flex-direction:column; gap:16px; margin-bottom:24px;">
+        <div>
+          <label style="display:block; margin-bottom:8px; font-size:14px; font-weight:bold; color:var(--text-main);">Desde:</label>
+          <input type="date" id="export-start" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; font-size:14px; box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="display:block; margin-bottom:8px; font-size:14px; font-weight:bold; color:var(--text-main);">Hasta:</label>
+          <input type="date" id="export-end" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; font-size:14px; box-sizing:border-box;">
+        </div>
+      </div>
+      
+      <div style="display:flex; justify-content:flex-end; gap:12px;">
+        <button id="export-cancel-btn" style="background:transparent; border:1px solid #aaa; color:var(--text-main); padding:10px 16px; border-radius:8px; cursor:pointer;">Cancelar</button>
+        <button id="export-confirm-btn" style="background:var(--brand); color:#fff; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:bold;">Descargar Excel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js" type="module"></script>
 </body>
 </html>
