@@ -15,6 +15,8 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   };
 
   // ---------- WHATSAPP PUBLIC CART ----------
+  var MENU = [];
+  var ALL_PRODUCTS = [];
   var waCart = {};
   
   window.addPublicCart = function(id, name, price) {
