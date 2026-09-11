@@ -14,9 +14,96 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     "Cofee Drinks":"ic-coffee", "DULCE - SNACK":"ic-cookie", "BEBIDAS":"ic-bottle"
   };
 
-  var MENU = [];
-  var ALL_PRODUCTS = [];
+  // ---------- WHATSAPP PUBLIC CART ----------
+  var waCart = {};
   
+  window.addPublicCart = function(id, name, price) {
+    if(waCart[id]) waCart[id].qty++;
+    else waCart[id] = {name: name, price: price, qty: 1};
+    updateWACartUI();
+  };
+
+  window.removePublicCart = function(id) {
+    if(waCart[id]) {
+      waCart[id].qty--;
+      if(waCart[id].qty <= 0) delete waCart[id];
+    }
+    updateWACartUI();
+  };
+
+  function updateWACartUI() {
+    var itemsEl = document.getElementById("wa-cart-items");
+    var totalEl = document.getElementById("wa-cart-total");
+    var countEl = document.getElementById("wa-cart-count");
+    var fab = document.getElementById("wa-cart-fab");
+    
+    if(!itemsEl || !fab) return;
+    
+    itemsEl.innerHTML = "";
+    var total = 0;
+    var count = 0;
+    
+    for(var id in waCart) {
+      var it = waCart[id];
+      total += it.price * it.qty;
+      count += it.qty;
+      
+      var div = document.createElement("div");
+      div.style.cssText = "display:flex; justify-content:space-between; margin-bottom:8px; color:#555; align-items:center;";
+      var safeName = it.name.replace(/'/g, "\\'");
+      div.innerHTML = `
+        <div style="flex:1; font-family:Inter,sans-serif; font-size:14px;">${it.name}</div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button onclick="removePublicCart('${id}')" style="border:1px solid #ccc; background:#fff; width:28px; height:28px; border-radius:4px; cursor:pointer; font-weight:bold;">-</button>
+          <span style="min-width:16px; text-align:center;">${it.qty}</span>
+          <button onclick="addPublicCart('${id}', '${safeName}', ${it.price})" style="border:1px solid #ccc; background:#fff; width:28px; height:28px; border-radius:4px; cursor:pointer; font-weight:bold;">+</button>
+          <div style="width:65px; text-align:right; font-weight:bold;">S/ ${(it.price * it.qty).toFixed(2)}</div>
+        </div>
+      `;
+      itemsEl.appendChild(div);
+    }
+    
+    totalEl.textContent = "S/ " + total.toFixed(2);
+    countEl.textContent = count;
+    
+    if(count > 0) fab.style.display = "flex";
+    else {
+      fab.style.display = "none";
+      document.getElementById("wa-cart-modal").style.display = "none";
+    }
+  }
+
+  window.toggleWACart = function() {
+    var modal = document.getElementById("wa-cart-modal");
+    if(modal.style.display === "flex") modal.style.display = "none";
+    else modal.style.display = "flex";
+  };
+
+  window.sendWAPedido = function() {
+    var name = document.getElementById("wa-name").value.trim();
+    var notes = document.getElementById("wa-notes").value.trim();
+    
+    if(!name) { alert("Por favor ingresa tu nombre."); return; }
+    
+    var msg = "¡Hola PISQA! Quisiera hacer el siguiente pedido:\n\n";
+    var total = 0;
+    for(var id in waCart) {
+      var it = waCart[id];
+      msg += it.qty + "x " + it.name + " (S/ " + (it.price * it.qty).toFixed(2) + ")\n";
+      total += it.price * it.qty;
+    }
+    msg += "\n*Total: S/ " + total.toFixed(2) + "*\n";
+    msg += "\n*Cliente:* " + name;
+    if(notes) msg += "\n*Mesa/Notas:* " + notes;
+    
+    // REEMPLAZAR ESTE NÚMERO POR EL NÚMERO REAL DE WHATSAPP DE PISQA
+    var phone = "51958150949"; 
+    
+    var url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg);
+    window.open(url, '_blank');
+  };
+
+  // ---------- RENDER PUBLIC MENU ----------
   window.showPublicMenu = function(catName){
     document.getElementById("galeria").classList.add("hidden");
     document.getElementById("public-menu-view").classList.remove("hidden");
@@ -30,21 +117,24 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
        prods.forEach(p => {
           var img = p.image_url ? p.image_url : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80"; // Default food img
           var div = document.createElement("div");
-          div.style.cssText = "background:var(--paper); border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.05);";
+          var safeName = p.name.replace(/'/g, "\\'");
+          div.style.cssText = "background:var(--paper); border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.05); display:flex; flex-direction:column;";
           div.innerHTML = `
             <img src="${img}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80';" style="width:100%; height:200px; object-fit:cover;">
-            <div style="padding:24px;">
+            <div style="padding:24px; display:flex; flex-direction:column; flex:1;">
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
-                <h3 style="font-size:20px; color:var(--text-main);">${p.name}</h3>
+                <h3 style="font-size:20px; color:var(--text-main); margin:0;">${p.name}</h3>
                 <div style="font-size:18px; color:var(--brand); font-family:Fraunces,serif;">S/ ${parseFloat(p.price).toFixed(2)}</div>
               </div>
-              <p style="font-size:14px; color:var(--text-muted); margin:0; line-height:1.5;">${p.description || ''}</p>
+              <p style="font-size:14px; color:var(--text-muted); margin:0 0 16px; line-height:1.5; flex:1;">${p.description || ''}</p>
+              <button onclick="addPublicCart('${p.id}', '${safeName}', ${p.price})" style="width:100%; padding:12px; border-radius:8px; border:none; background:var(--brand); color:#fff; cursor:pointer; font-weight:bold; font-size:16px; font-family:Inter,sans-serif; transition:background 0.2s;">
+                Añadir al pedido
+              </button>
             </div>
           `;
           list.appendChild(div);
        });
     }
-    // Scroll suave hasta el tope del menú para que el usuario no se pierda
     document.getElementById("public-menu-view").scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
