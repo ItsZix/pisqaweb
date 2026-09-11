@@ -101,8 +101,9 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     // REEMPLAZAR ESTE NÚMERO POR EL NÚMERO REAL DE WHATSAPP DE PISQA
     var phone = "51958150949"; 
     
-    var url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg);
-    window.open(url, '_blank');
+    // Usar api.whatsapp.com es más estable en PC y celulares, y window.location evita bloqueadores de ventanas emergentes.
+    var url = "https://api.whatsapp.com/send?phone=" + phone + "&text=" + encodeURIComponent(msg);
+    window.location.href = url;
   };
 
   // ---------- RENDER PUBLIC MENU ----------
